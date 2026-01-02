@@ -56,8 +56,14 @@ export default function LoginCallbackPage() {
       try {
         console.log('Session initialized, starting login process...');
 
+        // 確保 JWT 存在
+        const jwt = session.jwt;
+        if (!jwt) {
+          throw new Error('JWT not available');
+        }
+
         // 發送到後端驗證並建立 session
-        const response = await authAPI.login('google', session.jwt);
+        const response = await authAPI.login('google', jwt);
 
         if (response.data.success) {
           // 保存 token
