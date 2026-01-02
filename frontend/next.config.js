@@ -27,6 +27,8 @@ const nextConfig = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
+  // Disable static page generation for dynamic routes
+  output: 'standalone',
 }
 
 module.exports = nextConfig

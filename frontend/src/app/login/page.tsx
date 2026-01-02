@@ -17,11 +17,16 @@ export default function LoginPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
-  // Only use hooks after component mounts (client-side only)
-  const enokiFlow = mounted ? useEnokiFlow() : null;
-  const currentAccount = mounted ? useCurrentAccount() : null;
-  const { mutate: connectWallet } = mounted ? useConnectWallet() : { mutate: () => {} };
-  const wallets = mounted ? useWallets() : [];
+  // Early return if not mounted (prevents SSR issues)
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
+  // Hooks must be called unconditionally, but we check mounted before using them
+  const enokiFlow = useEnokiFlow();
+  const currentAccount = useCurrentAccount();
+  const { mutate: connectWallet } = useConnectWallet();
+  const wallets = useWallets();
   const [selectedRole, setSelectedRole] = useState<Role>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
