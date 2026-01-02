@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useEnokiFlow, useZkLoginSession } from '@mysten/enoki/react';
-import { Transaction } from '@mysten/sui.js/transactions';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client';
 import { suiToMist } from '@/lib/enokiWallet';
 
@@ -67,7 +67,7 @@ export function useEnokiBuyTicket() {
       const recipient = params.recipient || userAddress;
 
       // 創建交易
-      const tx = new Transaction();
+      const tx = new TransactionBlock();
       
       // 設置 Gas Budget
       tx.setGasBudget(30_000_000); // 30 MIST

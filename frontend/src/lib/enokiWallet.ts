@@ -3,7 +3,7 @@
 
 import { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client';
 import { useEnokiFlow, useZkLoginSession } from '@mysten/enoki/react';
-import { Transaction } from '@mysten/sui.js/transactions';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 // 創建 Sui Client (devnet)
 const suiClient = new SuiClient({
@@ -128,7 +128,7 @@ export function useEnokiTransaction() {
   const enokiFlow = useEnokiFlow();
 
   const signAndExecuteTransaction = async (
-    transaction: Transaction,
+    transaction: TransactionBlock,
     options?: {
       network?: 'mainnet' | 'testnet' | 'devnet';
       gasSponsor?: boolean;
