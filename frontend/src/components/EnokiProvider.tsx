@@ -10,10 +10,8 @@ export function EnokiProvider({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // Always render EnokiFlowProvider to ensure context is available
+  // EnokiFlowProvider should handle client-side initialization internally
   return (
     <EnokiFlowProvider
       apiKey={process.env.NEXT_PUBLIC_ENOKI_API_KEY || ''}
