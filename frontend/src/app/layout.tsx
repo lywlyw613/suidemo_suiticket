@@ -8,8 +8,8 @@ import '@mysten/dapp-kit/dist/index.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'NFT 票務系統',
-  description: '基於 Sui 的 AI 驅動對話式 NFT 票務系統',
+  title: 'NFT Ticketing System',
+  description: 'AI-driven conversational NFT ticketing system built on Sui blockchain',
 }
 
 export default function RootLayout({
@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-TW">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <WalletProvider>
           <EnokiProvider>
             {children}

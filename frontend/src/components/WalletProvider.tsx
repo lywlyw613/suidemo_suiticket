@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SuiClientProvider, WalletProvider as DappKitWalletProvider } from '@mysten/dapp-kit';
 import { getFullnodeUrl } from '@mysten/sui.js/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // 配置 devnet
 const networks = {
@@ -21,6 +21,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       },
     },
   }));
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <>{children}</>;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
