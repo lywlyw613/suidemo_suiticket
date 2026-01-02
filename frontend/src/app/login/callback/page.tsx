@@ -12,8 +12,11 @@ import { authAPI } from '@/lib/api';
 
 export default function LoginCallbackPage() {
   const router = useRouter();
-  const enokiFlow = useEnokiFlow();
-  const session = useZkLoginSession();
+  const [mounted, setMounted] = useState(false);
+  
+  // Only use hooks after component mounts (client-side only)
+  const enokiFlow = mounted ? useEnokiFlow() : null;
+  const session = mounted ? useZkLoginSession() : null;
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processing login...');
   const hasProcessed = useRef(false); // 防止重複執行
@@ -114,8 +117,8 @@ export default function LoginCallbackPage() {
       }
     };
 
-    processLogin();
-  }, [session, router]);
+           processLogin();
+         }, [mounted, session, router]);
 
   // 第三步：超時檢查 - 如果等待太久還沒有 session，顯示錯誤
   useEffect(() => {
@@ -128,10 +131,10 @@ export default function LoginCallbackPage() {
           setStatus('error');
           setMessage('zkLogin session initialization timeout, please login again');
         }
-    }, 15000); // 15 秒超時
+           }, 15000); // 15 秒超時
 
-    return () => clearTimeout(timeout);
-  }, [session]);
+           return () => clearTimeout(timeout);
+         }, [mounted, session]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-blue-900">

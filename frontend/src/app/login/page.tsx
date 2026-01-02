@@ -17,10 +17,13 @@ type Role = 'customer' | 'organizer' | 'verifier' | null;
 
 export default function LoginPage() {
   const router = useRouter();
-  const enokiFlow = useEnokiFlow();
-  const currentAccount = useCurrentAccount();
-  const { mutate: connectWallet } = useConnectWallet();
-  const wallets = useWallets();
+  const [mounted, setMounted] = useState(false);
+  
+  // Only use hooks after component mounts (client-side only)
+  const enokiFlow = mounted ? useEnokiFlow() : null;
+  const currentAccount = mounted ? useCurrentAccount() : null;
+  const { mutate: connectWallet } = mounted ? useConnectWallet() : { mutate: () => {} };
+  const wallets = mounted ? useWallets() : [];
   const [selectedRole, setSelectedRole] = useState<Role>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

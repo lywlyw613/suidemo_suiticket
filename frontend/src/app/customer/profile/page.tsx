@@ -15,8 +15,11 @@ import { getSuiBalance, formatSuiBalance, requestFaucet } from '@/lib/enokiWalle
 
 export default function ProfilePage() {
   const router = useRouter();
-  const currentAccount = useCurrentAccount();
-  const zkLoginSession = useZkLoginSession();
+  const [mounted, setMounted] = useState(false);
+  
+  // Only use hooks after component mounts (client-side only)
+  const currentAccount = mounted ? useCurrentAccount() : null;
+  const zkLoginSession = mounted ? useZkLoginSession() : null;
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'info' | 'wallet' | 'preferences' | 'orders'>('info');
