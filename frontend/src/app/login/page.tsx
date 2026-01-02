@@ -2,8 +2,6 @@
 
 // Force dynamic rendering - this page uses client-only hooks
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-export const runtime = 'nodejs';
 
 import { useState, useEffect } from 'react';
 import * as React from 'react';
