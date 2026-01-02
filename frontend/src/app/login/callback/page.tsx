@@ -14,12 +14,16 @@ export default function LoginCallbackPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
-  // Only use hooks after component mounts (client-side only)
-  const enokiFlow = mounted ? useEnokiFlow() : null;
-  const session = mounted ? useZkLoginSession() : null;
+  // Hooks must be called unconditionally, but we check mounted before using them
+  const enokiFlow = useEnokiFlow();
+  const session = useZkLoginSession();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processing login...');
   const hasProcessed = useRef(false); // 防止重複執行
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 第一步：處理 OAuth 回調
   useEffect(() => {
@@ -51,11 +55,11 @@ export default function LoginCallbackPage() {
     };
 
     handleCallback();
-  }, [enokiFlow]);
+  }, [mounted, enokiFlow]);
 
   // 第二步：當 session 有 JWT 時，處理登入
   useEffect(() => {
-    if (hasProcessed.current) return;
+    if (!mounted || hasProcessed.current) return;
     
     // 類型守衛：確保 session 和 jwt 都存在
     const jwt = session?.jwt;
@@ -122,7 +126,7 @@ export default function LoginCallbackPage() {
 
   // 第三步：超時檢查 - 如果等待太久還沒有 session，顯示錯誤
   useEffect(() => {
-    if (hasProcessed.current) return;
+    if (!mounted || hasProcessed.current) return;
     if (session?.jwt) return; // 如果已經有 JWT，不需要超時檢查
 
     const timeout = setTimeout(() => {
