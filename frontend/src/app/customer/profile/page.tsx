@@ -17,9 +17,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
-  // Only use hooks after component mounts (client-side only)
-  const currentAccount = mounted ? useCurrentAccount() : null;
-  const zkLoginSession = mounted ? useZkLoginSession() : null;
+  // Hooks must be called unconditionally, but we check mounted before using them
+  const currentAccount = useCurrentAccount();
+  const zkLoginSession = useZkLoginSession();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'info' | 'wallet' | 'preferences' | 'orders'>('info');
