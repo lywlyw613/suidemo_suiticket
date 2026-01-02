@@ -1,6 +1,28 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// 根據環境自動選擇 API URL
+// 生產環境：使用環境變數或默認後端 URL
+// 開發環境：使用 localhost
+const getApiUrl = () => {
+  // 如果明確設置了環境變數，使用它
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  // 如果在 Vercel 上（生產環境），需要後端 URL
+  // 注意：後端也需要部署到某個地方（如 Railway, Render 等）
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    // 生產環境：需要設置 NEXT_PUBLIC_API_URL 環境變數指向部署的後端
+    console.warn('⚠️ 生產環境需要設置 NEXT_PUBLIC_API_URL 環境變數指向後端服務器');
+    // 暫時返回 localhost（這在生產環境不會工作，需要部署後端）
+    return 'http://localhost:3001';
+  }
+  
+  // 開發環境：使用 localhost
+  return 'http://localhost:3001';
+};
+
+const API_URL = getApiUrl();
 
 export const api = axios.create({
   baseURL: `${API_URL}/api`,
