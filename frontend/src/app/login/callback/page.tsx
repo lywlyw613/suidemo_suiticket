@@ -50,21 +50,14 @@ export default function LoginCallbackPage() {
     if (hasProcessed.current) return;
     
     // 類型守衛：確保 session 和 jwt 都存在
-    if (!session || !session.jwt) return;
+    const jwt = session?.jwt;
+    if (!jwt) return;
 
     const processLogin = async () => {
       hasProcessed.current = true; // 標記為已處理
 
       try {
         console.log('Session initialized, starting login process...');
-
-        // 再次檢查以確保類型安全（雖然已經在 useEffect 開始檢查過）
-        if (!session?.jwt) {
-          throw new Error('JWT not available');
-        }
-
-        // 使用非空斷言，因為我們已經檢查過了
-        const jwt = session.jwt as string;
 
         // 發送到後端驗證並建立 session
         const response = await authAPI.login('google', jwt);
