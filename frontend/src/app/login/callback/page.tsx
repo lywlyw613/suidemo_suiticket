@@ -48,7 +48,9 @@ export default function LoginCallbackPage() {
   // 第二步：當 session 有 JWT 時，處理登入
   useEffect(() => {
     if (hasProcessed.current) return;
-    if (!session?.jwt) return; // 等待 session 有 JWT
+    
+    // 類型守衛：確保 session 和 jwt 都存在
+    if (!session || !session.jwt) return;
 
     const processLogin = async () => {
       hasProcessed.current = true; // 標記為已處理
@@ -56,11 +58,8 @@ export default function LoginCallbackPage() {
       try {
         console.log('Session initialized, starting login process...');
 
-        // 確保 JWT 存在
-        const jwt = session.jwt;
-        if (!jwt) {
-          throw new Error('JWT not available');
-        }
+        // 此時 TypeScript 知道 session.jwt 一定存在
+        const jwt: string = session.jwt;
 
         // 發送到後端驗證並建立 session
         const response = await authAPI.login('google', jwt);
