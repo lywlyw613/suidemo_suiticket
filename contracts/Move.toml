@@ -1,0 +1,12 @@
+[package]
+name = "nft_ticketing"
+version = "0.1.0"
+
+[addresses]
+nft_ticketing = "0x0"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet" }
+
+[dev-dependencies]
+
