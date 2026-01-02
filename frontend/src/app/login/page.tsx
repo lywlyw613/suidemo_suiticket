@@ -113,6 +113,10 @@ export default function LoginPage() {
       // 將 role 保存到 sessionStorage，因為 redirect URL 不能包含 query 參數
       sessionStorage.setItem('pendingLoginRole', selectedRole);
       
+      if (!enokiFlow) {
+        throw new Error('Enoki flow not initialized');
+      }
+      
       const url = await enokiFlow.createAuthorizationURL({
         provider: 'google',
         clientId: googleClientId || '',
