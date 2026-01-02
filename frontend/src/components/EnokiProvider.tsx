@@ -17,7 +17,6 @@ export function EnokiProvider({ children }: { children: React.ReactNode }) {
   return (
     <EnokiFlowProvider
       apiKey={process.env.NEXT_PUBLIC_ENOKI_API_KEY || ''}
-      appSlug={process.env.NEXT_PUBLIC_ENOKI_APP_SLUG || 'demoday-86b22d0b'}
     >
       {children}
     </EnokiFlowProvider>
