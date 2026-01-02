@@ -9,10 +9,17 @@ export async function connectMongoDB() {
     return;
   }
 
+  // 檢查 MONGODB_URI 是否設置
+  if (!MONGODB_URI || MONGODB_URI === 'mongodb://localhost:27017/nft_ticketing') {
+    console.warn('⚠️  MONGODB_URI not configured, using default localhost');
+    console.warn('💡 To use MongoDB Atlas, set MONGODB_URI in .env file');
+  }
+
   try {
     const maskedUri = MONGODB_URI.replace(/\/\/([^:]+):([^@]+)@/, '//$1:***@'); // 隱藏密碼
     console.log('🔌 嘗試連接 MongoDB:', maskedUri);
     console.log('🔌 連接字符串長度:', MONGODB_URI.length);
+    console.log('🔌 連接類型:', MONGODB_URI.startsWith('mongodb+srv://') ? 'Atlas (mongodb+srv)' : 'Standard');
     
     // 設置連接選項
     const options: any = {

@@ -31,8 +31,8 @@ UserSchema.virtual('id').get(function () {
 
 UserSchema.set('toJSON', {
   virtuals: true,
-  transform: (doc, ret) => {
-    ret.id = ret._id;
+  transform: (doc, ret: any) => {
+    ret.id = ret._id?.toString() || ret._id;
     delete ret._id;
     delete ret.__v;
     return ret;

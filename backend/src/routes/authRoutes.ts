@@ -323,7 +323,7 @@ router.get('/me', async (req: Request, res: Response, next: NextFunction) => {
       res.json({
         success: true,
         user: {
-          id: user.id || user._id?.toString(),
+          id: user.id || (user as any)._id?.toString() || '',
           suiAddress: user.suiAddress,
           email: user.email,
           name: user.name,

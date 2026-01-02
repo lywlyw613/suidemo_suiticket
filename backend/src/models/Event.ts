@@ -35,6 +35,12 @@ export interface IEvent extends Document {
   status: string; // draft, published, paused, cancelled, ended
   visibility: string; // public, private
   organizerId: string;
+  // On-chain data
+  suiEventObjectId?: string; // Sui Object ID of the event on-chain (if created on-chain)
+  // Statistics (indexed from chain)
+  totalTicketsSold?: number; // Total tickets sold (synced from chain)
+  totalRevenue?: number; // Total revenue in SUI (synced from chain)
+  lastSyncedAt?: Date; // Last time stats were synced from chain
   createdAt: Date;
   updatedAt: Date;
 }
@@ -74,6 +80,12 @@ const EventSchema = new Schema<IEvent>(
     // Status
     status: { type: String, default: 'draft', index: true },
     visibility: { type: String, default: 'public' },
+    // On-chain data
+    suiEventObjectId: { type: String, index: true },
+    // Statistics (indexed from chain)
+    totalTicketsSold: { type: Number, default: 0 },
+    totalRevenue: { type: Number, default: 0 },
+    lastSyncedAt: Date,
   },
   {
     timestamps: true,
@@ -86,7 +98,7 @@ EventSchema.virtual('id').get(function () {
 
 EventSchema.set('toJSON', {
   virtuals: true,
-  transform: (doc, ret) => {
+  transform: (doc, ret: any) => {
     ret.id = ret._id;
     delete ret._id;
     delete ret.__v;

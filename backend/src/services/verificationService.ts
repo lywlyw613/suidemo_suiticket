@@ -84,15 +84,17 @@ export async function verifyTicket(
     // 6. 獲取擁有者地址
     const owner = nft.data.owner;
     let ownerAddress = '';
-    if (typeof owner === 'object') {
-      // Sui owner 可能是 { AddressOwner: "0x..." } 格式
-      if ('AddressOwner' in owner) {
-        ownerAddress = (owner as any).AddressOwner || '';
-      } else if ('ObjectOwner' in owner) {
-        ownerAddress = (owner as any).ObjectOwner || '';
+    if (owner) {
+      if (typeof owner === 'object') {
+        // Sui owner 可能是 { AddressOwner: "0x..." } 格式
+        if ('AddressOwner' in owner) {
+          ownerAddress = (owner as any).AddressOwner || '';
+        } else if ('ObjectOwner' in owner) {
+          ownerAddress = (owner as any).ObjectOwner || '';
+        }
+      } else if (typeof owner === 'string') {
+        ownerAddress = owner;
       }
-    } else if (typeof owner === 'string') {
-      ownerAddress = owner;
     }
 
     // 7. 記錄驗證結果

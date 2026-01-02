@@ -8,7 +8,19 @@ import eventRoutes from './routes/eventRoutes';
 import { connectMongoDB } from './config/mongodb';
 import mongoose from 'mongoose';
 
+// Load environment variables
+// dotenv.config() by default reads .env from the current working directory
 dotenv.config();
+
+// Debug: Log MongoDB URI (masked) to verify it's loaded
+const mongoUri = process.env.MONGODB_URI;
+if (mongoUri) {
+  const maskedUri = mongoUri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:***@');
+  console.log('📋 MongoDB URI loaded:', maskedUri);
+  console.log('📋 MongoDB URI starts with mongodb+srv:', mongoUri.startsWith('mongodb+srv://'));
+} else {
+  console.warn('⚠️  MONGODB_URI not found in environment variables');
+}
 
 // Connect to MongoDB (非阻塞，失敗時使用內存存儲)
 connectMongoDB().then(() => {

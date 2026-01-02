@@ -5,6 +5,7 @@ import { Order } from '../models/Order';
 import { NFTTicket } from '../models/NFTTicket';
 import { logger } from '../utils/logger';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { checkMongoDB } from '../middleware/mongodbCheck';
 import mongoose from 'mongoose';
 
 const router = Router();
@@ -22,11 +23,97 @@ const verifyOrganizer = (req: AuthRequest, res: Response, next: NextFunction) =>
 };
 
 /**
+ * Search/List public events (for customers to browse)
+ * GET /api/events/search
+ * Query params: category, eventType, startTime, endTime, location, page, limit
+ */
+router.get('/search', checkMongoDB, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const {
+      category,
+      eventType,
+      startTime,
+      endTime,
+      location,
+      search, // Text search in name/description
+      page = 1,
+      limit = 20,
+    } = req.query;
+
+    // Build query - only show published, public events
+    const query: any = {
+      status: 'published',
+      visibility: 'public',
+    };
+
+    // Category filter
+    if (category) {
+      query.category = category;
+    }
+
+    // Event type filter
+    if (eventType) {
+      query.eventType = eventType;
+    }
+
+    // Time range filter
+    if (startTime) {
+      query.startTime = { $gte: new Date(startTime as string) };
+    }
+    if (endTime) {
+      query.endTime = { $lte: new Date(endTime as string) };
+    }
+
+    // Location filter (venue name or address)
+    if (location) {
+      query.$or = [
+        { venueName: { $regex: location, $options: 'i' } },
+        { venueAddress: { $regex: location, $options: 'i' } },
+      ];
+    }
+
+    // Text search in name/description
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    // Execute query with pagination
+    const events = await Event.find(query)
+      .sort({ startTime: 1 }) // Sort by start time (upcoming first)
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit))
+      .select('-__v'); // Exclude version field
+
+    const total = await Event.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        events,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total,
+          pages: Math.ceil(total / Number(limit)),
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * Get all events for organizer
  * GET /api/events/organizer
  */
-router.get('/organizer', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.get('/organizer', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+
     const organizerId = req.organizerId!;
     const { status, page = 1, limit = 10 } = req.query;
 
@@ -63,8 +150,9 @@ router.get('/organizer', authenticate, verifyOrganizer, async (req: AuthRequest,
  * Get event by ID (public)
  * GET /api/events/:id
  */
-router.get('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.get('/:id', checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+
     const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).json({
@@ -92,8 +180,9 @@ router.get('/:id', async (req: AuthRequest, res: Response, next: NextFunction) =
  * Create new event
  * POST /api/events
  */
-router.post('/', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+
     const organizerId = req.organizerId!;
     const eventData = {
       ...req.body,
@@ -111,6 +200,17 @@ router.post('/', authenticate, verifyOrganizer, async (req: AuthRequest, res: Re
     });
   } catch (error: any) {
     logger.error('Event creation failed', { error: error.message });
+    
+    // Handle MongoDB timeout errors specifically (in case connection drops during operation)
+    if (error.message?.includes('buffering timed out') || error.message?.includes('timeout')) {
+      return res.status(503).json({
+        success: false,
+        error: 'Database operation timeout',
+        message: 'The database operation timed out. Please check your MongoDB connection.',
+        suggestion: 'Ensure MongoDB is running and accessible. Check your MONGODB_URI configuration.',
+      });
+    }
+    
     next(error);
   }
 });
@@ -119,7 +219,7 @@ router.post('/', authenticate, verifyOrganizer, async (req: AuthRequest, res: Re
  * Update event
  * PUT /api/events/:id
  */
-router.put('/:id', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.put('/:id', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const organizerId = req.organizerId!;
     const event = await Event.findById(req.params.id);
@@ -154,7 +254,7 @@ router.put('/:id', authenticate, verifyOrganizer, async (req: AuthRequest, res: 
  * Publish event
  * POST /api/events/:id/publish
  */
-router.post('/:id/publish', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/:id/publish', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const organizerId = req.organizerId!;
     const event = await Event.findById(req.params.id);
@@ -208,7 +308,7 @@ router.post('/:id/publish', authenticate, verifyOrganizer, async (req: AuthReque
  * Get event statistics
  * GET /api/events/:id/stats
  */
-router.get('/:id/stats', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.get('/:id/stats', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const organizerId = req.organizerId!;
     const event = await Event.findById(req.params.id);
@@ -257,7 +357,7 @@ router.get('/:id/stats', authenticate, verifyOrganizer, async (req: AuthRequest,
  * Create ticket type
  * POST /api/events/:id/ticket-types
  */
-router.post('/:id/ticket-types', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/:id/ticket-types', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const organizerId = req.organizerId!;
     const event = await Event.findById(req.params.id);
@@ -289,7 +389,7 @@ router.post('/:id/ticket-types', authenticate, verifyOrganizer, async (req: Auth
  * Update ticket type
  * PUT /api/events/:id/ticket-types/:ticketTypeId
  */
-router.put('/:id/ticket-types/:ticketTypeId', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.put('/:id/ticket-types/:ticketTypeId', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const organizerId = req.organizerId!;
     const event = await Event.findById(req.params.id);
@@ -325,7 +425,7 @@ router.put('/:id/ticket-types/:ticketTypeId', authenticate, verifyOrganizer, asy
  * Toggle ticket type listing status
  * POST /api/events/:id/ticket-types/:ticketTypeId/toggle-listing
  */
-router.post('/:id/ticket-types/:ticketTypeId/toggle-listing', authenticate, verifyOrganizer, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/:id/ticket-types/:ticketTypeId/toggle-listing', authenticate, verifyOrganizer, checkMongoDB, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const organizerId = req.organizerId!;
     const event = await Event.findById(req.params.id);
