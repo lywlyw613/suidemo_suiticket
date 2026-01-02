@@ -12,6 +12,11 @@ export default function LoginCallbackPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
+  // Early return if not mounted (prevents SSR issues)
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
   // Hooks must be called unconditionally, but we check mounted before using them
   const enokiFlow = useEnokiFlow();
   const session = useZkLoginSession();
