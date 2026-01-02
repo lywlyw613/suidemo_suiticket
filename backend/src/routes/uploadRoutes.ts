@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
-import * as walrusService from '../services/walrusService';
+import * as walrusService from '../services/walrusService.js';
 import { logger } from '../utils/logger';
 
 const router = Router();

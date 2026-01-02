@@ -1,9 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { User } from '../models';
-import { logger } from '../utils/logger';
+import { User } from '../models/index.js';
+import { logger } from '../utils/logger.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { memoryStorage } from '../storage/memoryStorage';
+import { memoryStorage } from '../storage/memoryStorage.js';
 
 const router = Router();
 

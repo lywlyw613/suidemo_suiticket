@@ -1,11 +1,11 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { Event } from '../models/Event';
-import { TicketType } from '../models/TicketType';
-import { Order } from '../models/Order';
-import { NFTTicket } from '../models/NFTTicket';
-import { logger } from '../utils/logger';
-import { authenticate, AuthRequest } from '../middleware/auth';
-import { checkMongoDB } from '../middleware/mongodbCheck';
+import { Event } from '../models/Event.js';
+import { TicketType } from '../models/TicketType.js';
+import { Order } from '../models/Order.js';
+import { NFTTicket } from '../models/NFTTicket.js';
+import { logger } from '../utils/logger.js';
+import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { checkMongoDB } from '../middleware/mongodbCheck.js';
 import mongoose from 'mongoose';
 
 const router = Router();

@@ -1,5 +1,5 @@
-import { suiClient } from '../config/sui';
-import { TicketVerification, NFTTicket } from '../config/database';
+import { suiClient } from '../config/sui.js';
+import { TicketVerification, NFTTicket } from '../config/database.js';
 import { logger } from '../utils/logger';
 
 export interface VerificationResult {

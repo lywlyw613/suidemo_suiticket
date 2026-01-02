@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import * as verificationService from '../services/verificationService';
+import * as verificationService from '../services/verificationService.js';
 import { logger } from '../utils/logger';
 
 const router = Router();

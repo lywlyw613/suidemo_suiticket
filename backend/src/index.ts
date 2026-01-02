@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import verificationRoutes from './routes/verificationRoutes';
-import uploadRoutes from './routes/uploadRoutes';
-import authRoutes from './routes/authRoutes';
-import eventRoutes from './routes/eventRoutes';
-import { connectMongoDB } from './config/mongodb';
+import verificationRoutes from './routes/verificationRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
+import { connectMongoDB } from './config/mongodb.js';
 import mongoose from 'mongoose';
 
 // Load environment variables
@@ -95,7 +95,7 @@ app.get('/api/test-db', async (req, res) => {
   }
 
   try {
-    const { User } = await import('./config/database');
+    const { User } = await import('./config/database.js');
     const count = await User.countDocuments();
     res.json({ 
       success: true, 
