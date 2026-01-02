@@ -376,14 +376,15 @@ export default function LoginPage() {
                       console.log('所有檢測到的錢包:', wallets);
                       console.log('錢包詳細信息:', wallets.map(w => ({
                         name: w.name,
-                        installed: w.installed,
-                        available: w.available,
                         accounts: w.accounts,
                       })));
                       
-                      // 嘗試找到可用的錢包（不嚴格依賴 installed/available 標誌）
-                      // 有些錢包可能沒有正確設置這些標誌
-                      let availableWallet = wallets.find(w => w.installed || w.available);
+                      // 嘗試找到可用的錢包
+                      // 使用類型斷言來訪問可能存在的屬性
+                      let availableWallet = wallets.find(w => {
+                        const wallet = w as any;
+                        return wallet.installed || wallet.available || true; // 如果沒有標誌，默認可用
+                      });
                       
                       // 如果沒找到，嘗試使用第一個錢包（可能是 Slush 或其他）
                       if (!availableWallet && wallets.length > 0) {
