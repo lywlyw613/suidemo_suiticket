@@ -58,8 +58,13 @@ export default function LoginCallbackPage() {
       try {
         console.log('Session initialized, starting login process...');
 
-        // 此時 TypeScript 知道 session.jwt 一定存在
-        const jwt: string = session.jwt;
+        // 再次檢查以確保類型安全（雖然已經在 useEffect 開始檢查過）
+        if (!session?.jwt) {
+          throw new Error('JWT not available');
+        }
+
+        // 使用非空斷言，因為我們已經檢查過了
+        const jwt = session.jwt as string;
 
         // 發送到後端驗證並建立 session
         const response = await authAPI.login('google', jwt);

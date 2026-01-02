@@ -275,14 +275,15 @@ export default function LoginPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {roleOptions.map((option) => {
               const isSelected = selectedRole === option.id;
-              const colorMap = {
+              const colorMap: Record<string, string> = {
                 customer: 'from-primary-500 to-primary-600',
                 organizer: 'from-secondary-500 to-secondary-600',
                 verifier: 'from-accent-500 to-accent-600',
               };
+              const optionId = option.id as string;
               return (
                 <button
-                  key={option.id}
+                  key={optionId}
                   onClick={() => {
                     setSelectedRole(option.id);
                     setError(null);
@@ -293,7 +294,7 @@ export default function LoginPage() {
                       : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-soft card-hover'
                   }`}
                 >
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${colorMap[option.id] || option.color} flex items-center justify-center text-white mb-4 shadow-soft`}>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${colorMap[optionId] || option.color} flex items-center justify-center text-white mb-4 shadow-soft`}>
                     {option.icon}
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{option.title}</h3>
