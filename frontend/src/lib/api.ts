@@ -77,7 +77,7 @@ export const ticketAPI = {
 };
 
 export const verificationAPI = {
-  verify: (data: { ticketId: string; eventId: string }) =>
+  verify: (data: { ticketId: string; eventId: string; verifierId?: string }) =>
     api.post('/verification/verify', data),
 };
 
