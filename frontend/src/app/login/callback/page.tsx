@@ -23,11 +23,11 @@ export default function LoginCallbackPage() {
 
   // 第一步：處理 OAuth 回調
   useEffect(() => {
-    if (hasProcessed.current) return;
+    if (!mounted || !enokiFlow || hasProcessed.current) return;
     
     const handleCallback = async () => {
       // 檢查是否有 hash（OAuth 回調）
-      if (typeof window !== 'undefined' && window.location.hash) {
+      if (typeof window !== 'undefined' && window.location.hash && enokiFlow) {
         try {
           console.log('Processing OAuth callback...');
           await enokiFlow.handleAuthCallback(window.location.hash);
