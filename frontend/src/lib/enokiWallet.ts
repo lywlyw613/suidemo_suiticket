@@ -137,7 +137,9 @@ export function useEnokiTransaction() {
     try {
       // 使用 Enoki 簽名交易
       // Enoki 會自動處理 zkLogin 簽名
-      const result = await enokiFlow.signAndExecuteTransaction({
+      // 注意：signAndExecuteTransaction 可能在不同版本中 API 不同
+      // 如果類型錯誤，可能需要使用其他方法
+      const result = await (enokiFlow as any).signAndExecuteTransaction({
         transaction,
         network: options?.network || 'devnet',
         // 如果啟用 Gas Sponsor，Enoki 會自動處理

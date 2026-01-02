@@ -29,6 +29,7 @@ export function useInitZkLoginGoogle() {
         try {
           const url = await enokiFlow.createAuthorizationURL({
             provider: 'google',
+            clientId: '', // 使用空字符串，讓 Enoki 使用 Dashboard 配置
             redirectUrl: `${window.location.origin}/login/callback`,
           });
           return url;
