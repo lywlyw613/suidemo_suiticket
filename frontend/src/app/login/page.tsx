@@ -1,5 +1,8 @@
 'use client';
 
+// Force dynamic rendering - this page uses client-only hooks
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import { useEnokiFlow } from '@mysten/enoki/react';
