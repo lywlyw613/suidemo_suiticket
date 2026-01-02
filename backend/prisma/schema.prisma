@@ -1,0 +1,213 @@
+// Prisma Schema for NFT Ticketing System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  suiAddress  String   @unique
+  email       String?
+  name        String?
+  avatar      String?
+  loginMethod String?  // google, apple, email
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders      Order[]
+  tickets     NFTTicket[]
+  conversations Conversation[]
+
+  @@index([suiAddress])
+  @@index([email])
+}
+
+model Organizer {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  name              String
+  email             String?
+  phone             String?
+  address           String?
+  verificationStatus String  @default("pending") // pending, verified, rejected
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events            Event[]
+
+  @@index([verificationStatus])
+}
+
+model Event {
+  id            String   @id @default(uuid())
+  organizerId   String
+  name          String
+  description   String?  @db.Text
+  eventType     String?
+  startTime     DateTime
+  endTime       DateTime
+  saleStartTime DateTime?
+  saleEndTime   DateTime?
+  venueName     String?
+  venueAddress  String?  @db.Text
+  venueLat      Float?
+  venueLng      Float?
+  heroImageUrl  String?
+  bannerUrl     String?
+  galleryUrls   Json?    // Array of image URLs
+  videoUrl      String?
+  seatMapUrl    String?
+  status        String   @default("draft") // draft, published, cancelled, ended
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  organizer     Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  ticketTypes   TicketType[]
+  orders        Order[]
+  tickets       NFTTicket[]
+
+  @@index([status])
+  @@index([startTime])
+  @@index([organizerId])
+}
+
+model TicketType {
+  id              String   @id @default(uuid())
+  eventId         String
+  name            String
+  description     String?  @db.Text
+  price           Decimal  @db.Decimal(10, 2)
+  quantity        Int
+  soldCount       Int      @default(0)
+  seatingZone     String?
+  resellable      Boolean  @default(true)
+  maxResellPrice  Decimal? @db.Decimal(10, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  orderItems      OrderItem[]
+
+  @@index([eventId])
+}
+
+model Order {
+  id                  String   @id @default(uuid())
+  userId              String
+  eventId             String
+  totalAmount         Decimal  @db.Decimal(10, 2)
+  paymentMethod       String?
+  paymentStatus       String   @default("pending") // pending, paid, failed, refunded
+  paymentTransactionId String?
+  nftMintStatus       String   @default("pending") // pending, minting, success, failed
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event               Event    @relation(fields: [eventId], references: [id])
+  items               OrderItem[]
+  tickets             NFTTicket[]
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([paymentStatus])
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  ticketTypeId String
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  totalPrice  Decimal  @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  ticketType  TicketType @relation(fields: [ticketTypeId], references: [id])
+  tickets     NFTTicket[]
+
+  @@index([orderId])
+}
+
+model NFTTicket {
+  id            String   @id @default(uuid())
+  orderId      String
+  orderItemId  String?
+  userId       String
+  eventId      String
+  ticketTypeId String
+  suiObjectId  String   @unique
+  ticketNumber String   @unique
+  seatZone     String?
+  seatNumber   String?
+  purchasePrice Decimal  @db.Decimal(10, 2)
+  purchaseTime DateTime?
+  isUsed       Boolean  @default(false)
+  usedAt       DateTime?
+  isResold     Boolean  @default(false)
+  resoldAt     DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order        Order    @relation(fields: [orderId], references: [id])
+  orderItem    OrderItem? @relation(fields: [orderItemId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
+  event        Event    @relation(fields: [eventId], references: [id])
+  verifications TicketVerification[]
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([suiObjectId])
+  @@index([ticketNumber])
+  @@index([isUsed])
+}
+
+model TicketVerification {
+  id                String   @id @default(uuid())
+  ticketId          String?
+  eventId           String
+  verifierId        String?
+  ticketNumber      String?
+  suiObjectId       String?
+  verificationResult String   // success, failed
+  errorMessage      String?  @db.Text
+  verifiedAt        DateTime @default(now())
+
+  ticket            NFTTicket? @relation(fields: [ticketId], references: [id])
+
+  @@index([eventId])
+  @@index([verifiedAt])
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  userId    String
+  context   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ConversationMessage[]
+
+  @@index([userId])
+}
+
+model ConversationMessage {
+  id             String   @id @default(uuid())
+  conversationId String
+  role           String   // user, assistant
+  content        String   @db.Text
+  metadata       Json?
+  timestamp      DateTime @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+

@@ -23,8 +23,6 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Vercel deployment optimizations
-  output: 'standalone',
 }
 
 module.exports = nextConfig
