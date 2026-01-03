@@ -38,20 +38,12 @@ export default function LoginPage() {
     if (!mounted) return;
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
-    if (token && userRole) {
-      // 已登入，直接跳轉
-      // 如果已經在目標頁面，就不重定向
-      const currentPath = window.location.pathname;
-      const isOnTargetPage = currentPath.startsWith('/organizer/') || 
-                            currentPath.startsWith('/verifier/') || 
-                            currentPath.startsWith('/customer/');
-      
-      if (!isOnTargetPage) {
-        const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
-          : userRole === 'verifier' ? '/verifier/dashboard' 
-          : '/customer/dashboard';
-        router.push(redirectPath);
-      }
+    // 只在明確訪問 /login 頁面且已登入時才重定向
+    if (token && userRole && window.location.pathname === '/login') {
+      const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
+        : userRole === 'verifier' ? '/verifier/dashboard' 
+        : '/customer/dashboard';
+      router.push(redirectPath);
     }
   }, [mounted, router]);
 
