@@ -17,12 +17,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
-  // Early return if not mounted (prevents SSR issues)
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  
-  // Hooks must be called unconditionally, but we check mounted before using them
+  // Hooks must be called unconditionally at the top level
   const enokiFlow = useEnokiFlow();
   const currentAccount = useCurrentAccount();
   const { mutate: connectWallet } = useConnectWallet();
@@ -36,6 +31,11 @@ export default function LoginPage() {
 
   // 檢查是否已登入
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
     if (token && userRole) {
@@ -45,7 +45,7 @@ export default function LoginPage() {
         : '/customer/dashboard';
       router.push(redirectPath);
     }
-  }, [router]);
+  }, [mounted, router]);
 
   // 根據角色決定跳轉路徑
   const getRedirectPath = (role: Role) => {
@@ -260,6 +260,11 @@ export default function LoginPage() {
       borderColor: 'border-emerald-200',
     },
   ];
+
+  // Wait for client-side mounting before rendering
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
