@@ -203,43 +203,58 @@ export default function OrganizerDashboard() {
           ) : (
             <div className="space-y-4">
               {events.map((event) => (
-                <Link
-                  key={event.id}
-                  href={`/events/${event.id}`}
-                  className="card-hover p-6 block mb-4"
-                >
-                  <div className="flex items-start gap-6">
-                    {event.heroImageUrl && (
-                      <img
-                        src={event.heroImageUrl}
-                        alt={event.name}
-                        className="w-32 h-32 object-cover rounded-xl"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-1">{event.name}</h3>
-                          <p className="text-sm text-gray-800 mb-2">{event.category || 'Uncategorized'}</p>
-                          <p className="text-sm text-gray-700">
-                            {new Date(event.startTime).toLocaleDateString()} - {new Date(event.endTime).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          event.status === 'published' ? 'bg-green-100 text-green-700' :
-                          event.status === 'draft' ? 'bg-gray-100 text-gray-700' :
-                          event.status === 'paused' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-red-100 text-red-700'
-                        }`}>
-                          {event.status}
-                        </span>
-                      </div>
-                      {event.venueName && (
-                        <p className="text-sm text-gray-800">📍 {event.venueName}</p>
+                <div key={event.id} className="card p-6">
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="block mb-4"
+                  >
+                    <div className="flex items-start gap-6">
+                      {event.heroImageUrl && (
+                        <img
+                          src={event.heroImageUrl}
+                          alt={event.name}
+                          className="w-32 h-32 object-cover rounded-xl"
+                        />
                       )}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-1">{event.name}</h3>
+                            <p className="text-sm text-gray-800 mb-2">{event.category || 'Uncategorized'}</p>
+                            <p className="text-sm text-gray-700">
+                              {new Date(event.startTime).toLocaleDateString()} - {new Date(event.endTime).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            event.status === 'published' ? 'bg-green-100 text-green-700' :
+                            event.status === 'draft' ? 'bg-gray-100 text-gray-700' :
+                            event.status === 'paused' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {event.status}
+                          </span>
+                        </div>
+                        {event.venueName && (
+                          <p className="text-sm text-gray-800">📍 {event.venueName}</p>
+                        )}
+                      </div>
                     </div>
+                  </Link>
+                  <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+                    <Link
+                      href={`/organizer/events/${event.id}/manage`}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      Manage Listings
+                    </Link>
+                    <Link
+                      href={`/events/${event.id}`}
+                      className="px-4 py-2 bg-primary-100 hover:bg-primary-200 text-primary-700 rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      View Event
+                    </Link>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
