@@ -58,24 +58,53 @@ export default function EventsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <div key={event.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
-                <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-500"></div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{event.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4">{event.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{event.date}</span>
+            {events.map((event) => {
+              // 只顯示有已列出票種的活動
+              const hasListedTickets = event.ticketTypes?.some(t => t.isListed) ?? false;
+              if (!hasListedTickets) return null;
+              
+              const startDate = new Date(event.startTime);
+              const formattedDate = startDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              });
+              
+              return (
+                <div key={event.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+                  {event.heroImageUrl ? (
+                    <img
+                      src={event.heroImageUrl}
+                      alt={event.name}
+                      className="w-full h-48 object-cover"
+                    />
+                  ) : (
+                    <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-500"></div>
+                  )}
+                  <div className="p-6">
+                    <div className="mb-2">
+                      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                        {event.category}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{event.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-sm text-gray-500">{formattedDate}</p>
+                        <p className="text-xs text-gray-400">{event.venueName}</p>
+                      </div>
+                    </div>
                     <Link
                       href={`/events/${event.id}`}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-colors"
+                      className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-colors"
                     >
                       View Details
                     </Link>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>
