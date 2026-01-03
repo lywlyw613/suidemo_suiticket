@@ -87,9 +87,20 @@ export async function mintTicket(
     };
   } catch (error: any) {
     console.error('Mint ticket error:', error);
+    // 安全地提取錯誤訊息
+    let errorMessage = 'Failed to mint ticket';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error?.message) {
+      errorMessage = error.message;
+    } else if (error?.toString) {
+      errorMessage = error.toString();
+    }
     return {
       success: false,
-      error: error.message || 'Failed to mint ticket',
+      error: errorMessage,
     };
   }
 }
@@ -248,9 +259,20 @@ export async function createGateCap(
     };
   } catch (error: any) {
     console.error('Create gate cap error:', error);
+    // 安全地提取錯誤訊息
+    let errorMessage = 'Failed to create gate cap';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error?.message) {
+      errorMessage = error.message;
+    } else if (error?.toString) {
+      errorMessage = error.toString();
+    }
     return {
       success: false,
-      error: error.message || 'Failed to create gate cap',
+      error: errorMessage,
     };
   }
 }
@@ -280,9 +302,20 @@ export async function transferTicket(
     };
   } catch (error: any) {
     console.error('Transfer ticket error:', error);
+    // 安全地提取錯誤訊息
+    let errorMessage = 'Failed to transfer ticket';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error?.message) {
+      errorMessage = error.message;
+    } else if (error?.toString) {
+      errorMessage = error.toString();
+    }
     return {
       success: false,
-      error: error.message || 'Failed to transfer ticket',
+      error: errorMessage,
     };
   }
 }
