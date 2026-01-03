@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getAllDemoEvents, type DemoEvent } from '@/lib/demoEvents';
 
 interface Message {
   id: string;
@@ -17,7 +18,7 @@ export default function AIPage() {
     {
       id: '1',
       role: 'assistant',
-      content: '您好！我是您的 AI 票務助手。我可以幫您：\n• 搜尋活動\n• 提供個人化推薦\n• 建議座位\n• 協助購票\n\n請告訴我您想要什麼？',
+      content: 'Hello! I am your AI ticketing assistant. I can help you:\n• Search for events\n• Provide personalized recommendations\n• Suggest seats\n• Assist with ticket purchases\n\nPlease tell me what you need?',
       timestamp: new Date(),
     },
   ]);
@@ -37,6 +38,20 @@ export default function AIPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Get all events data (demo + localStorage)
+  const getAllEvents = (): DemoEvent[] => {
+    const demoEvents = getAllDemoEvents();
+    const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
+    
+    // Merge and remove duplicates
+    const allEvents = [...demoEvents, ...savedEvents];
+    const uniqueEvents = allEvents.filter((event, index, self) =>
+      index === self.findIndex((e) => e.id === event.id)
+    );
+    
+    return uniqueEvents;
+  };
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
@@ -48,28 +63,67 @@ export default function AIPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setLoading(true);
 
-    // TODO: 調用 AI API
-    // 暫時使用模擬回應
-    setTimeout(() => {
-      const assistantMessage: Message = {
+    try {
+      // Get all events data
+      const allEvents = getAllEvents();
+      
+      // Prepare messages for API (convert to OpenAI format)
+      const apiMessages = messages
+        .filter((msg) => msg.role !== 'assistant' || msg.id !== '1') // Exclude initial greeting
+        .map((msg) => ({
+          role: msg.role === 'user' ? 'user' : 'assistant',
+          content: msg.content,
+        }))
+        .concat([{ role: 'user' as const, content: currentInput }]);
+
+      // Call OpenAI API via Next.js API route
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: apiMessages,
+          events: allEvents,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: data.message,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      } else {
+        throw new Error(data.error || 'Failed to get AI response');
+      }
+    } catch (error: any) {
+      console.error('AI API error:', error);
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: '這是一個模擬回應。AI 功能正在開發中。\n\n我可以幫您：\n• 搜尋活動（例如："找音樂會"）\n• 推薦活動（例如："推薦適合我的活動"）\n• 座位建議（例如："搖滾區有什麼座位？"）',
+        content: `Sorry, I encountered an error: ${error.message || 'Please try again later.'}\n\nMake sure you have set up your OPENAI_API_KEY in the environment variables.`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const quickActions = [
-    { label: '找音樂會', query: '找音樂會' },
-    { label: '推薦活動', query: '推薦適合我的活動' },
-    { label: '查看座位', query: '搖滾區有什麼座位？' },
-    { label: '購票流程', query: '如何購買票券？' },
+    { label: 'Find Concerts', query: 'Find concerts' },
+    { label: 'Recommended Events', query: 'What events do you recommend?' },
+    { label: 'View Seats', query: 'What seats are available?' },
+    { label: 'Ticket Purchase', query: 'How do I purchase tickets?' },
   ];
 
   return (
@@ -78,13 +132,13 @@ export default function AIPage() {
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/customer/dashboard" className="text-2xl font-bold bg-gradient-to-r from-amber-600 via-orange-500 to-pink-500 bg-clip-text text-transparent">
-            NFT 票務系統 - AI 助手
+            NFT Ticketing System - AI Assistant
           </Link>
           <Link
             href="/customer/dashboard"
             className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
           >
-            返回
+            Back
           </Link>
         </div>
       </header>
@@ -152,7 +206,7 @@ export default function AIPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="輸入您的問題..."
+              placeholder="Enter your question..."
               className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             />
             <button
@@ -160,7 +214,7 @@ export default function AIPage() {
               disabled={!input.trim() || loading}
               className="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-semibold hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
             >
-              發送
+              Send
             </button>
           </div>
         </div>
