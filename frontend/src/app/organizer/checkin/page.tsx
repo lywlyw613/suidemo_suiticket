@@ -13,6 +13,11 @@ import { getTicketNFT, verifyTicket, parseTicketQRCode } from '@/lib/suiTicket';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 export default function OrganizerCheckInPage() {
+  // Early return for SSR
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
   const router = useRouter();
   const currentAccount = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();

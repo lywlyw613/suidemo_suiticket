@@ -1,5 +1,8 @@
 'use client';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -10,6 +13,12 @@ import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 export default function VerifierDashboard() {
   const router = useRouter();
+  
+  // Early return for SSR
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
   const currentAccount = useCurrentAccount();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
