@@ -35,25 +35,43 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 // CORS 配置 - 必須在所有路由之前
+const corsOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+  : [];
+
 const allowedOrigins = [
   'http://localhost:3000',
   'https://suidemo-suiticket.vercel.app',
-  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : []),
+  ...corsOrigins,
 ];
+
+// 去重
+const uniqueOrigins = [...new Set(allowedOrigins)];
+
+console.log('🌐 CORS Allowed Origins:', uniqueOrigins);
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('🌐 CORS: Request with no origin, allowing');
+      return callback(null, true);
+    }
     
-    if (allowedOrigins.includes(origin)) {
+    console.log('🌐 CORS: Checking origin:', origin);
+    
+    if (uniqueOrigins.includes(origin)) {
+      console.log('✅ CORS: Origin allowed:', origin);
       callback(null, true);
     } else {
       // For development, allow localhost with any port
       if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:')) {
+        console.log('✅ CORS: Localhost allowed (dev mode):', origin);
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        console.error('❌ CORS: Origin not allowed:', origin);
+        console.error('❌ CORS: Allowed origins:', uniqueOrigins);
+        callback(new Error(`Not allowed by CORS: ${origin}`));
       }
     }
   },
