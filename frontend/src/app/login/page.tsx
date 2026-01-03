@@ -505,7 +505,7 @@ export default function LoginPage() {
                       </>
                     )}
                   </button>
-                  <p className="text-xs text-gray-500 text-center mt-2">
+                  <p className="text-xs text-gray-700 text-center mt-2">
                     Note: Full zkLogin requires backend. This is a demo mode.
                   </p>
                 </div>

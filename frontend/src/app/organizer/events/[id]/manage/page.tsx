@@ -180,7 +180,7 @@ export default function ManageEventPage() {
                   </div>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <span className={`text-sm font-semibold ${
-                      ticketType.isListed ? 'text-primary-600' : 'text-gray-600'
+                      ticketType.isListed ? 'text-primary-600' : 'text-gray-800'
                     }`}>
                       {ticketType.isListed ? 'Public' : 'Private'}
                     </span>

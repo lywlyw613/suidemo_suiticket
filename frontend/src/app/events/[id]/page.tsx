@@ -151,7 +151,7 @@ export default function EventDetailPage() {
                   <div>
                     <p className="font-semibold text-gray-900">Venue</p>
                     <p className="text-gray-700">{event.venueName}</p>
-                    <p className="text-sm text-gray-600 mt-1">{event.venueAddress}</p>
+                    <p className="text-sm text-gray-800 mt-1">{event.venueAddress}</p>
                   </div>
                 </div>
 
@@ -177,7 +177,7 @@ export default function EventDetailPage() {
               {availableTicketTypes.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-700 mb-2">No tickets are currently listed for sale</p>
-                  <p className="text-sm text-gray-600">The organizer may list tickets later</p>
+                  <p className="text-sm text-gray-800">The organizer may list tickets later</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -201,9 +201,9 @@ export default function EventDetailPage() {
                           </div>
                           <p className="text-gray-700 mb-2">{ticketType.description}</p>
                           {ticketType.seatRange && (
-                            <p className="text-sm text-gray-600">Seat Range: {ticketType.seatRange}</p>
+                            <p className="text-sm text-gray-800">Seat Range: {ticketType.seatRange}</p>
                           )}
-                          <p className="text-sm text-gray-600 mt-2">
+                          <p className="text-sm text-gray-800 mt-2">
                             Available: {ticketType.quantity} tickets
                           </p>
                         </div>
@@ -282,7 +282,7 @@ export default function EventDetailPage() {
               )}
 
               {!selectedTicketType && (
-                <p className="text-gray-600 text-sm mb-6">Please select a ticket type</p>
+                <p className="text-gray-800 text-sm mb-6">Please select a ticket type</p>
               )}
 
               <button
@@ -294,7 +294,7 @@ export default function EventDetailPage() {
               </button>
 
               {!currentAccount && (
-                <p className="text-sm text-gray-600 text-center mt-4">
+                <p className="text-sm text-gray-800 text-center mt-4">
                   Please connect your wallet to purchase
                 </p>
               )}

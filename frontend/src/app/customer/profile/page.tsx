@@ -177,7 +177,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">{user?.name || '用戶'}</h2>
-                  <p className="text-gray-600">{user?.email || '未設置'}</p>
+                  <p className="text-gray-800">{user?.email || '未設置'}</p>
                 </div>
               </div>
               <div className="space-y-4">
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                       {/* 餘額顯示 */}
                       <div className="mt-4 pt-4 border-t border-gray-200">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-gray-600">餘額</span>
+                          <span className="text-sm font-medium text-gray-800">餘額</span>
                           {balanceLoading ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-600"></div>
                           ) : (
@@ -345,7 +345,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-gray-900">語言</p>
-                    <p className="text-sm text-gray-500">選擇介面語言</p>
+                    <p className="text-sm text-gray-800">選擇介面語言</p>
                   </div>
                   <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
                     <option>繁體中文</option>
@@ -355,7 +355,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-gray-900">主題</p>
-                    <p className="text-sm text-gray-500">選擇介面主題</p>
+                    <p className="text-sm text-gray-800">選擇介面主題</p>
                   </div>
                   <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
                     <option>淺色</option>
@@ -371,7 +371,7 @@ export default function ProfilePage() {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">訂單歷史</h2>
               <div className="text-center py-12 text-gray-700">
-                <svg className="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-16 h-16 mx-auto mb-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <p>尚無訂單記錄</p>

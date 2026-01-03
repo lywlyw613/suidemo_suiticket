@@ -199,7 +199,7 @@ export default function TicketDetailPage() {
               <p className="font-semibold text-gray-900">{ticket.eventName}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Ticket Type</p>
+              <p className="text-sm text-gray-800 mb-1 font-medium">Ticket Type</p>
               <p className="font-semibold text-gray-900">{ticket.ticketType}</p>
             </div>
             <div>

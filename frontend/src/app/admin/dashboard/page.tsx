@@ -77,7 +77,7 @@ export default function AdminDashboard() {
             SuiTicket - Admin
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">Platform Operator</span>
+            <span className="text-sm text-gray-800 font-medium">Platform Operator</span>
             <button
               onClick={() => {
                 localStorage.removeItem('is_admin');
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
                 className={`px-6 py-4 font-semibold whitespace-nowrap border-b-2 transition-colors ${
                   activeTab === tab.id
                     ? 'border-primary-600 text-primary-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                    : 'border-transparent text-gray-800 hover:text-gray-900'
                 }`}
               >
                 <span className="mr-2">{tab.icon}</span>
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard Overview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
-                  <p className="text-sm text-gray-600 mb-2">Total Events</p>
+                  <p className="text-sm text-gray-800 mb-2 font-medium">Total Events</p>
                   <p className="text-3xl font-bold text-gray-900">{stats.totalEvents}</p>
                 </div>
                 <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
@@ -139,9 +139,9 @@ export default function AdminDashboard() {
 
               {/* Sales Trends Chart Placeholder */}
               <div className="bg-gray-50 rounded-xl p-8 text-center">
-                <p className="text-gray-600 mb-4">Sales Trends Chart</p>
+                <p className="text-gray-800 mb-4 font-medium">Sales Trends Chart</p>
                 <div className="h-64 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                  <p className="text-gray-400">Chart visualization would go here</p>
+                  <p className="text-gray-600">Chart visualization would go here</p>
                 </div>
               </div>
             </div>
@@ -155,9 +155,9 @@ export default function AdminDashboard() {
                   <input
                     type="text"
                     placeholder="Search events..."
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-gray-900 bg-white placeholder:text-gray-500"
                   />
-                  <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                  <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-gray-900 bg-white">
                     <option>All Status</option>
                     <option>Published</option>
                     <option>Draft</option>
@@ -170,13 +170,13 @@ export default function AdminDashboard() {
                   <div key={i} className="border border-gray-200 rounded-lg p-4 flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold text-gray-900">Event {i}</h3>
-                      <p className="text-sm text-gray-600">Organizer • Created on 2026-01-15</p>
+                      <p className="text-sm text-gray-800">Organizer • Created on 2026-01-15</p>
                     </div>
                     <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm">Edit</button>
-                      <button className="px-4 py-2 bg-yellow-100 hover:bg-yellow-200 rounded-lg text-sm">Pause</button>
-                      <button className="px-4 py-2 bg-red-100 hover:bg-red-200 rounded-lg text-sm">Delete</button>
-                      <button className="px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded-lg text-sm">View Report</button>
+                      <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-900 font-medium">Edit</button>
+                      <button className="px-4 py-2 bg-yellow-100 hover:bg-yellow-200 rounded-lg text-sm text-gray-900 font-medium">Pause</button>
+                      <button className="px-4 py-2 bg-red-100 hover:bg-red-200 rounded-lg text-sm text-gray-900 font-medium">Delete</button>
+                      <button className="px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded-lg text-sm text-gray-900 font-medium">View Report</button>
                     </div>
                   </div>
                 ))}
@@ -196,9 +196,9 @@ export default function AdminDashboard() {
                   <div key={i} className="border border-gray-200 rounded-lg p-4 flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold text-gray-900">{userType.type}</h3>
-                      <p className="text-sm text-gray-600">{userType.count} users</p>
+                      <p className="text-sm text-gray-800">{userType.count} users</p>
                     </div>
-                    <button className="px-4 py-2 bg-primary-100 hover:bg-primary-200 rounded-lg text-sm">View List</button>
+                      <button className="px-4 py-2 bg-primary-100 hover:bg-primary-200 rounded-lg text-sm text-gray-900 font-medium">View List</button>
                   </div>
                 ))}
               </div>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                   <h3 className="font-semibold text-gray-900 mb-4">Revenue Statistics</h3>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Total Revenue</span>
+                      <span className="text-gray-800">Total Revenue</span>
                       <span className="font-semibold">45,678 SUI</span>
                     </div>
                     <div className="flex justify-between">
@@ -251,15 +251,15 @@ export default function AdminDashboard() {
               <div className="space-y-4">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-900 mb-2">Pending Events</h3>
-                  <p className="text-sm text-gray-600 mb-4">3 events waiting for review</p>
+                  <p className="text-sm text-gray-800 mb-4">3 events waiting for review</p>
                   <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
                       <div key={i} className="bg-white rounded-lg p-3 flex items-center justify-between">
-                        <span className="text-sm">Event {i} - Submitted on 2026-01-15</span>
+                        <span className="text-sm text-gray-900">Event {i} - Submitted on 2026-01-15</span>
                         <div className="flex gap-2">
-                          <button className="px-3 py-1 bg-green-100 hover:bg-green-200 rounded text-sm">Approve</button>
-                          <button className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-sm">Reject</button>
-                          <button className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-sm">Request Info</button>
+                          <button className="px-3 py-1 bg-green-100 hover:bg-green-200 rounded text-sm text-gray-900 font-medium">Approve</button>
+                          <button className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-sm text-gray-900 font-medium">Reject</button>
+                          <button className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-sm text-gray-900 font-medium">Request Info</button>
                         </div>
                       </div>
                     ))}
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-900 mb-2">Review History</h3>
-                  <p className="text-sm text-gray-600">View past reviews and decisions</p>
+                  <p className="text-sm text-gray-800">View past reviews and decisions</p>
                 </div>
               </div>
             </div>
@@ -291,7 +291,7 @@ export default function AdminDashboard() {
                     <div>
                       <label className="block text-sm text-gray-700 mb-1">Platform Fee Rate</label>
                       <input type="number" defaultValue="5" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-                      <span className="text-xs text-gray-500">%</span>
+                      <span className="text-xs text-gray-700">%</span>
                     </div>
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default function AdminDashboard() {
                   <h3 className="font-semibold text-gray-900 mb-4">Key Metrics</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Traffic</span>
+                      <span className="text-gray-800">Traffic</span>
                       <span className="font-semibold">12,345 visits</span>
                     </div>
                     <div className="flex justify-between">
@@ -362,7 +362,7 @@ export default function AdminDashboard() {
               </div>
               <div className="bg-gray-50 rounded-xl p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Geographic Distribution</h3>
-                <p className="text-sm text-gray-600">User behavior and geographic analysis would be displayed here</p>
+                <p className="text-sm text-gray-800">User behavior and geographic analysis would be displayed here</p>
               </div>
             </div>
           )}

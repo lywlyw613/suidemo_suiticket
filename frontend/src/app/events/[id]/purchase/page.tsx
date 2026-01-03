@@ -359,7 +359,7 @@ export default function PurchasePage() {
               </button>
 
               {!currentAccount && (
-                <p className="text-sm text-gray-600 text-center mt-4">
+                <p className="text-sm text-gray-800 text-center mt-4">
                   Please connect your wallet to continue
                 </p>
               )}
