@@ -161,45 +161,51 @@ export default function EventDetailPage() {
 
             {/* Ticket Types */}
             <div className="card p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Ticket Types</h2>
-              <div className="space-y-4">
-                {availableTicketTypes.map((ticketType) => (
-                  <div
-                    key={ticketType.id}
-                    className={`p-6 rounded-xl border-2 transition-all cursor-pointer ${
-                      selectedTicketType === ticketType.id
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                    onClick={() => setSelectedTicketType(ticketType.id)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-bold text-gray-900">{ticketType.name}</h3>
-                          <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold">
-                            {ticketType.price} SUI
-                          </span>
-                        </div>
-                        <p className="text-gray-700 mb-2">{ticketType.description}</p>
-                        {ticketType.seatRange && (
-                          <p className="text-sm text-gray-600">Seat Range: {ticketType.seatRange}</p>
-                        )}
-                        <p className="text-sm text-gray-600 mt-2">
-                          Available: {ticketType.quantity} tickets
-                        </p>
-                      </div>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Tickets</h2>
+              {availableTicketTypes.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-700 mb-2">No tickets are currently listed for sale</p>
+                  <p className="text-sm text-gray-600">The organizer may list tickets later</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {availableTicketTypes.map((ticketType) => (
+                    <div
+                      key={ticketType.id}
+                      className={`p-6 rounded-xl border-2 transition-all cursor-pointer ${
                         selectedTicketType === ticketType.id
-                          ? 'border-primary-500 bg-primary-500'
-                          : 'border-gray-300'
-                      }`}>
-                        {selectedTicketType === ticketType.id && (
-                          <div className="w-3 h-3 rounded-full bg-white"></div>
-                        )}
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={() => setSelectedTicketType(ticketType.id)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-bold text-gray-900">{ticketType.name}</h3>
+                            <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold">
+                              {ticketType.price} SUI
+                            </span>
+                          </div>
+                          <p className="text-gray-700 mb-2">{ticketType.description}</p>
+                          {ticketType.seatRange && (
+                            <p className="text-sm text-gray-600">Seat Range: {ticketType.seatRange}</p>
+                          )}
+                          <p className="text-sm text-gray-600 mt-2">
+                            Available: {ticketType.quantity} tickets
+                          </p>
+                        </div>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                          selectedTicketType === ticketType.id
+                            ? 'border-primary-500 bg-primary-500'
+                            : 'border-gray-300'
+                        }`}>
+                          {selectedTicketType === ticketType.id && (
+                            <div className="w-3 h-3 rounded-full bg-white"></div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
                   ))}
                 </div>
               )}
