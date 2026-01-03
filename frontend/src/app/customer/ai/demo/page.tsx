@@ -117,20 +117,20 @@ export default function DemoAIPage() {
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl p-4 ${
+                className={`max-w-[80%] rounded-2xl p-5 ${
                   message.role === 'user'
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                     : 'bg-gray-100 text-gray-900'
                 }`}
               >
-                <p className="whitespace-pre-wrap">{message.content}</p>
-                <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-white/70' : 'text-gray-700'}`}>
+                <p className="whitespace-pre-wrap text-lg leading-relaxed">{message.content}</p>
+                <p className={`text-sm mt-3 ${message.role === 'user' ? 'text-white/70' : 'text-gray-700'}`}>
                   {message.timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                 </p>
                 {message.showBuyButton && (
                   <button
                     onClick={handleBuyTickets}
-                    className="mt-4 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl w-full"
+                    className="mt-4 px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold text-lg hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl w-full"
                   >
                     🎫 Buy Tickets (2x VVIP - Prestige)
                   </button>

@@ -152,15 +152,15 @@ export default function AIPage() {
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl p-4 ${
+                className={`max-w-[80%] rounded-2xl p-5 ${
                   message.role === 'user'
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                     : 'bg-gray-100 text-gray-900'
                 }`}
               >
-                <p className="whitespace-pre-wrap">{message.content}</p>
-                <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-white/70' : 'text-gray-700'}`}>
-                  {message.timestamp.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}
+                <p className="whitespace-pre-wrap text-lg leading-relaxed">{message.content}</p>
+                <p className={`text-sm mt-3 ${message.role === 'user' ? 'text-white/70' : 'text-gray-700'}`}>
+                  {message.timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function AIPage() {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Enter your question..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-base"
             />
             <button
               onClick={handleSend}
