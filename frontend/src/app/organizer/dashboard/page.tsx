@@ -206,7 +206,7 @@ export default function OrganizerDashboard() {
                 <Link
                   key={event.id}
                   href={`/events/${event.id}`}
-                  className="card-hover p-6 block"
+                  className="card-hover p-6 block mb-4"
                 >
                   <div className="flex items-start gap-6">
                     {event.heroImageUrl && (

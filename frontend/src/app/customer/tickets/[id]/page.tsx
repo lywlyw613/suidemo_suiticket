@@ -105,12 +105,25 @@ export default function TicketDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* NFT Ticket Display */}
           <div className="lg:col-span-2">
-            <div className={`bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-2xl p-8 text-white ${
-              isUsed ? 'grayscale opacity-75' : ''
+            <div className={`relative bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-2xl p-8 text-white ${
+              isUsed ? 'grayscale opacity-60' : ''
             }`}>
               {isUsed && (
-                <div className="absolute top-8 right-8 bg-red-500 text-white px-6 py-3 rounded-lg font-bold text-xl">
-                  USED
+                <>
+                  <div className="absolute inset-0 bg-black/30 rounded-2xl z-10"></div>
+                  <div className="absolute top-8 right-8 bg-red-600 text-white px-6 py-3 rounded-lg font-bold text-xl z-20 shadow-lg">
+                    USED
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <div className="bg-white/90 text-gray-900 px-8 py-4 rounded-xl font-bold text-2xl transform rotate-[-15deg] shadow-2xl">
+                      VERIFIED
+                    </div>
+                  </div>
+                </>
+              )}
+              {!isUsed && (
+                <div className="absolute top-4 left-4 bg-green-500 text-white px-4 py-2 rounded-lg font-semibold text-sm z-10">
+                  VALID
                 </div>
               )}
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6">
