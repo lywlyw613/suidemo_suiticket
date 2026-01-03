@@ -36,20 +36,25 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 // CORS 配置 - 必須在所有路由之前
 const corsOrigins = process.env.CORS_ORIGIN 
-  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim()).filter(o => o.length > 0)
   : [];
 
 const allowedOrigins = [
   'http://localhost:3000',
   'https://suidemo-suiticket.vercel.app',
+  'https://suidemosuiticket-production.up.railway.app',
   ...corsOrigins,
 ];
 
 // 去重
 const uniqueOrigins = [...new Set(allowedOrigins)];
 
-console.log('🌐 CORS Allowed Origins:', uniqueOrigins);
+console.log('🌐 CORS Configuration:');
+console.log('🌐 CORS_ORIGIN env:', process.env.CORS_ORIGIN);
+console.log('🌐 Parsed CORS origins:', corsOrigins);
+console.log('🌐 Final allowed origins:', uniqueOrigins);
 
+// 簡化 CORS 配置，確保預檢請求正確處理
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -77,8 +82,10 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   exposedHeaders: ['Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
