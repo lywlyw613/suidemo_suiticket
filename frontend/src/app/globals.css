@@ -49,16 +49,16 @@ body {
   
   /* 專業輸入框樣式 */
   .input {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-gray-900 bg-white;
   }
   
   /* Select 選項深色文字 */
   select.input {
-    @apply text-gray-900;
+    @apply text-gray-900 bg-white;
   }
   
   select.input option {
-    @apply text-gray-900;
+    @apply text-gray-900 bg-white;
   }
   
   /* Placeholder 文字顏色 */
@@ -67,6 +67,25 @@ body {
   }
   
   textarea.input::placeholder {
+    @apply text-gray-500;
+  }
+  
+  /* 確保所有輸入框都有深色文字 */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  textarea,
+  select {
+    @apply text-gray-900 bg-white;
+  }
+  
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="number"]::placeholder,
+  textarea::placeholder {
     @apply text-gray-500;
   }
 }

@@ -105,7 +105,7 @@ export default function AIPage() {
                 }`}
               >
                 <p className="whitespace-pre-wrap">{message.content}</p>
-                <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
+                <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-white/70' : 'text-gray-700'}`}>
                   {message.timestamp.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>

@@ -158,7 +158,7 @@ export default function ProfilePage() {
                 className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-amber-500 text-amber-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 {tab.label}
@@ -213,7 +213,7 @@ export default function ProfilePage() {
                 const walletInfo = getWalletAddress();
                 if (!walletInfo) {
                   return (
-                    <div className="p-4 border border-gray-200 rounded-xl text-center text-gray-500">
+                    <div className="p-4 border border-gray-200 rounded-xl text-center text-gray-700">
                       未連接錢包
                     </div>
                   );
@@ -225,7 +225,7 @@ export default function ProfilePage() {
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <p className="font-semibold text-gray-900 text-lg">{walletInfo.type}</p>
-                          <p className="text-sm text-gray-500 font-mono mt-1 break-all">
+                          <p className="text-sm text-gray-800 font-mono mt-1 break-all">
                             {walletInfo.address}
                           </p>
                         </div>
@@ -335,7 +335,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-gray-900">通知</p>
-                    <p className="text-sm text-gray-500">接收活動提醒和訂單通知</p>
+                    <p className="text-sm text-gray-700">接收活動提醒和訂單通知</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" defaultChecked />
@@ -370,8 +370,8 @@ export default function ProfilePage() {
           {activeTab === 'orders' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">訂單歷史</h2>
-              <div className="text-center py-12 text-gray-500">
-                <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-12 text-gray-700">
+                <svg className="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <p>尚無訂單記錄</p>

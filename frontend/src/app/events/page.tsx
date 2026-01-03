@@ -53,8 +53,8 @@ export default function EventsPage() {
             <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
-            <p className="text-gray-500 mb-4">No events available at the moment</p>
-            <p className="text-sm text-gray-400">Events will be displayed here after creation</p>
+            <p className="text-gray-700 mb-4">No events available at the moment</p>
+            <p className="text-sm text-gray-600">Events will be displayed here after creation</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -91,8 +91,8 @@ export default function EventsPage() {
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <p className="text-sm text-gray-500">{formattedDate}</p>
-                        <p className="text-xs text-gray-400">{event.venueName}</p>
+                        <p className="text-sm text-gray-700">{formattedDate}</p>
+                        <p className="text-xs text-gray-600">{event.venueName}</p>
                       </div>
                     </div>
                     <Link
