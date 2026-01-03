@@ -1,6 +1,6 @@
 import { suiClient } from '../config/sui.js';
 import { TicketVerification, NFTTicket } from '../config/database.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export interface VerificationResult {
   valid: boolean;
