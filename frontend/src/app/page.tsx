@@ -17,7 +17,7 @@ export default function Home() {
       <header className="border-b border-gray-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-            suiTicket
+            SuiTicket
           </Link>
           <nav className="flex items-center gap-6">
             <Link
@@ -41,11 +41,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.08),transparent_50%)]"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <h2 className="text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              suiTicket
+            <h2 className="text-6xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+              SUITICKET
             </h2>
             <p className="text-xl text-gray-800 mb-10 leading-relaxed">
-              suiTicket on Sui blockchain for smart ticketing
+              SuiTicket on Sui blockchain for smart ticketing
             </p>
             <div className="flex items-center justify-center gap-4">
               <Link
@@ -70,7 +70,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Role</h2>
-            <p className="text-lg text-gray-800">Get started with suiTicket</p>
+            <p className="text-lg text-gray-800">Get started with SuiTicket</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">

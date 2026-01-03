@@ -132,7 +132,7 @@ export default function VerifierDashboard() {
       <header className="border-b border-gray-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-accent-600 to-accent-700 bg-clip-text text-transparent">
-            suiTicket - Verification
+            SuiTicket - Verification
           </Link>
           <div className="flex items-center gap-4">
             {currentAccount && (

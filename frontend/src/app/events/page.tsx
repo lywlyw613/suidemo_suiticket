@@ -29,7 +29,7 @@ export default function EventsPage() {
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            suiTicket
+            SuiTicket
           </Link>
           <Link
             href="/login?role=customer"
