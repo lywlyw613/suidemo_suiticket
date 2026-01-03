@@ -116,7 +116,7 @@ export async function getUserTickets(address: string): Promise<TicketNFT[]> {
           const owner = obj.data.owner;
           let ownerAddress = '';
           
-          if (typeof owner === 'object') {
+          if (owner && typeof owner === 'object') {
             if ('AddressOwner' in owner) {
               ownerAddress = (owner as any).AddressOwner || '';
             } else if ('ObjectOwner' in owner) {
