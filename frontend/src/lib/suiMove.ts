@@ -180,25 +180,13 @@ export async function transferTicket(
 export async function getTicketAdmin(): Promise<string | null> {
   try {
     // Query for TicketAdmin shared object
-    const objects = await suiClient.getOwnedObjects({
-      owner: PACKAGE_ID, // Package owner (shared objects are owned by package)
-      filter: {
-        StructType: `${PACKAGE_ID}::${TICKET_MODULE}::TicketAdmin`,
-      },
-      options: {
-        showContent: true,
-      },
-    });
-
-    // Actually, shared objects need different query
-    // Let's try querying by type
-    const allObjects = await suiClient.getObjectsOwnedByAddress(PACKAGE_ID);
+    // Note: Shared objects cannot be queried using getOwnedObjects
+    // The admin ID should be stored in environment variables or passed as parameter
+    // For demo purposes, we return null and expect the admin ID to be provided
+    // In production, store the admin ID after contract deployment
     
-    // Or better: query by object type using getOwnedObjects with package as owner
-    // For shared objects, we need to use getObject with known ID or query differently
-    
-    // For now, return null and let user provide admin ID
-    // In production, admin ID should be stored or passed as parameter
+    // TODO: In production, store TicketAdmin object ID after contract initialization
+    // For now, return null and let user provide admin ID from demoData
     return null;
   } catch (error) {
     console.error('Failed to get ticket admin:', error);
