@@ -7,6 +7,8 @@ import { useMintTicket } from '@/hooks/useMintTicket';
 import { DEMO_TICKET_ADMIN_ID, isDemoMode } from '@/lib/demoData';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { createTicketType, publishTicketType } from '@/lib/suiMove';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 type EventData = {
   name: string;

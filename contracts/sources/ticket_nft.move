@@ -47,6 +47,18 @@ public struct GateCap has key {
     event_id: String,
 }
 
+/// 票券類型定義（用於管理票種和發布狀態）
+public struct TicketType has key {
+    id: UID,
+    event_id: String,
+    ticket_type_name: String,
+    price: u64,
+    total_quantity: u64,
+    sold_quantity: u64,
+    is_published: bool, // 是否公開銷售
+    organizer_id: String,
+}
+
 /// 初始化函數
 fun init(ctx: &mut TxContext) {
     let admin = TicketAdmin {
@@ -132,6 +144,40 @@ public entry fun grant_cap(cap: GateCap, recipient: address) {
     transfer::transfer(cap, recipient);
 }
 
+/// 創建票券類型（主辦方使用）
+public entry fun create_ticket_type(
+    admin: &TicketAdmin,
+    event_id: String,
+    ticket_type_name: String,
+    price: u64,
+    total_quantity: u64,
+    organizer_id: String,
+    ctx: &mut TxContext,
+) {
+    let ticket_type = TicketType {
+        id: object::new(ctx),
+        event_id,
+        ticket_type_name,
+        price,
+        total_quantity,
+        sold_quantity: 0,
+        is_published: false, // 默認未發布
+        organizer_id,
+    };
+    
+    transfer::transfer(ticket_type, tx_context::sender(ctx));
+}
+
+/// 發布票券類型（設置為可銷售）
+public entry fun publish_ticket_type(ticket_type: &mut TicketType) {
+    ticket_type.is_published = true;
+}
+
+/// 取消發布票券類型
+public entry fun unpublish_ticket_type(ticket_type: &mut TicketType) {
+    ticket_type.is_published = false;
+}
+
 /// 獲取票券資訊
 public fun get_ticket_info(ticket: &TicketNFT): (
     String,
@@ -146,6 +192,25 @@ public fun get_ticket_info(ticket: &TicketNFT): (
         ticket.ticket_number,
         ticket.purchase_price,
         ticket.is_used,
+    )
+}
+
+/// 獲取票券類型資訊
+public fun get_ticket_type_info(ticket_type: &TicketType): (
+    String,
+    String,
+    u64,
+    u64,
+    u64,
+    bool,
+) {
+    (
+        ticket_type.event_id,
+        ticket_type.ticket_type_name,
+        ticket_type.price,
+        ticket_type.total_quantity,
+        ticket_type.sold_quantity,
+        ticket_type.is_published,
     )
 }
 

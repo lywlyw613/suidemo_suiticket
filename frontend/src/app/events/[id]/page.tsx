@@ -26,7 +26,19 @@ export default function EventDetailPage() {
 
   useEffect(() => {
     if (!mounted || !eventId) return;
-    const eventData = getDemoEvent(eventId);
+    
+    // 先嘗試從 demo events 讀取
+    let eventData = getDemoEvent(eventId);
+    
+    // 如果找不到，從 localStorage 讀取 organizer 創建的活動
+    if (!eventData) {
+      const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
+      const foundEvent = savedEvents.find((e: any) => e.id === eventId);
+      if (foundEvent) {
+        eventData = foundEvent as DemoEvent;
+      }
+    }
+    
     setEvent(eventData);
   }, [mounted, eventId]);
 

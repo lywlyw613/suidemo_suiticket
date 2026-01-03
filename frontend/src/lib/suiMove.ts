@@ -95,6 +95,97 @@ export async function mintTicket(
 }
 
 /**
+ * 創建票券類型（主辦方使用）
+ */
+export async function createTicketType(
+  adminId: string,
+  params: {
+    eventId: string;
+    ticketTypeName: string;
+    price: number; // in SUI
+    totalQuantity: number;
+    organizerId: string;
+  },
+  signAndExecute: (tx: TransactionBlock) => Promise<any>
+): Promise<{ success: boolean; digest?: string; ticketTypeId?: string; error?: string }> {
+  try {
+    const tx = new TransactionBlock();
+    
+    // Convert price from SUI to MIST (1 SUI = 10^9 MIST)
+    const priceMist = BigInt(Math.floor(params.price * 1_000_000_000));
+
+    tx.moveCall({
+      target: `${PACKAGE_ID}::${TICKET_MODULE}::create_ticket_type`,
+      arguments: [
+        tx.object(adminId), // admin
+        tx.pure.string(params.eventId),
+        tx.pure.string(params.ticketTypeName),
+        tx.pure.u64(priceMist),
+        tx.pure.u64(params.totalQuantity),
+        tx.pure.string(params.organizerId),
+      ],
+    });
+
+    const result = await signAndExecute(tx);
+
+    // Extract ticket type ID from transaction result
+    let ticketTypeId: string | undefined;
+    if (result.objectChanges) {
+      const createdTicketType = result.objectChanges.find(
+        (change: any) => change.type === 'created' && change.objectType?.includes('TicketType')
+      );
+      if (createdTicketType) {
+        ticketTypeId = createdTicketType.objectId;
+      }
+    }
+
+    return {
+      success: true,
+      digest: result.digest,
+      ticketTypeId,
+    };
+  } catch (error: any) {
+    console.error('Create ticket type error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to create ticket type',
+    };
+  }
+}
+
+/**
+ * 發布票券類型（設置為可銷售）
+ */
+export async function publishTicketType(
+  ticketTypeId: string,
+  signAndExecute: (tx: TransactionBlock) => Promise<any>
+): Promise<{ success: boolean; digest?: string; error?: string }> {
+  try {
+    const tx = new TransactionBlock();
+
+    tx.moveCall({
+      target: `${PACKAGE_ID}::${TICKET_MODULE}::publish_ticket_type`,
+      arguments: [
+        tx.object(ticketTypeId),
+      ],
+    });
+
+    const result = await signAndExecute(tx);
+
+    return {
+      success: true,
+      digest: result.digest,
+    };
+  } catch (error: any) {
+    console.error('Publish ticket type error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to publish ticket type',
+    };
+  }
+}
+
+/**
  * 創建 GateCap（驗票權限）
  */
 export async function createGateCap(
