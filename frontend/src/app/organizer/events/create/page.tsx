@@ -49,6 +49,8 @@ type TicketTypeData = {
 
 export default function CreateEventPage() {
   const router = useRouter();
+  const currentAccount = useCurrentAccount();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [eventId, setEventId] = useState<string | null>(null);
