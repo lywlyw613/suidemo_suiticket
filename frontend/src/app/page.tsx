@@ -8,26 +8,8 @@ import { getAllDemoEvents } from '@/lib/demoEvents';
 export default function Home() {
   const router = useRouter();
 
-  useEffect(() => {
-    // 檢查是否已登入
-    const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('userRole');
-    
-    // 只在首次訪問首頁時重定向，避免循環重定向
-    // 檢查當前路徑，如果已經在目標頁面就不重定向
-    const currentPath = window.location.pathname;
-    const isOnTargetPage = currentPath.startsWith('/organizer/') || 
-                          currentPath.startsWith('/verifier/') || 
-                          currentPath.startsWith('/customer/');
-    
-    if (token && userRole && !isOnTargetPage && currentPath === '/') {
-      // 已登入且不在目標頁面，根據用戶類型跳轉
-      const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
-        : userRole === 'verifier' ? '/verifier/dashboard' 
-        : '/customer/dashboard';
-      router.push(redirectPath);
-    }
-  }, [router]);
+  // 移除自動重定向邏輯，讓用戶可以自由訪問首頁
+  // 重定向應該只在登入頁面或登入回調頁面進行
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
