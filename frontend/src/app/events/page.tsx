@@ -1,10 +1,27 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getAllDemoEvents, type DemoEvent } from '@/lib/demoEvents';
 
 export default function EventsPage() {
-  const [events] = useState<any[]>([]); // TODO: 從 API 獲取
+  const [events, setEvents] = useState<DemoEvent[]>([]);
+
+  useEffect(() => {
+    // 從 localStorage 讀取 organizer 創建的活動
+    const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
+    
+    // 合併 demo event 和保存的活動
+    const demoEvents = getAllDemoEvents();
+    const allEvents = [...demoEvents, ...savedEvents];
+    
+    // 過濾掉重複的（如果有相同的 ID）
+    const uniqueEvents = allEvents.filter((event, index, self) =>
+      index === self.findIndex((e) => e.id === event.id)
+    );
+    
+    setEvents(uniqueEvents);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50">
