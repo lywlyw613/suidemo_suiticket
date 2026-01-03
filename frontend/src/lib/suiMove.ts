@@ -205,7 +205,14 @@ export async function listTicketToKiosk(
   signAndExecute: (tx: TransactionBlock) => Promise<any>
 ): Promise<{ success: boolean; digest?: string; listingId?: string; error?: string }> {
   try {
-    const { KioskClient, Network } = await import('@mysten/kiosk');
+    const kioskModule = await import('@mysten/kiosk');
+    // @mysten/kiosk exports KioskClient and Network differently
+    const KioskClient = (kioskModule as any).KioskClient || (kioskModule as any).default?.KioskClient;
+    const Network = (kioskModule as any).Network || (kioskModule as any).default?.Network;
+    
+    if (!KioskClient || !Network) {
+      throw new Error('KioskClient or Network not found in @mysten/kiosk');
+    }
     
     const kioskClient = new KioskClient({
       client: suiClient,
@@ -260,7 +267,14 @@ export async function buyTicketFromKiosk(
   signAndExecute: (tx: TransactionBlock) => Promise<any>
 ): Promise<{ success: boolean; digest?: string; ticketId?: string; error?: string }> {
   try {
-    const { KioskClient, Network } = await import('@mysten/kiosk');
+    const kioskModule = await import('@mysten/kiosk');
+    // @mysten/kiosk exports KioskClient and Network differently
+    const KioskClient = (kioskModule as any).KioskClient || (kioskModule as any).default?.KioskClient;
+    const Network = (kioskModule as any).Network || (kioskModule as any).default?.Network;
+    
+    if (!KioskClient || !Network) {
+      throw new Error('KioskClient or Network not found in @mysten/kiosk');
+    }
     
     const kioskClient = new KioskClient({
       client: suiClient,
