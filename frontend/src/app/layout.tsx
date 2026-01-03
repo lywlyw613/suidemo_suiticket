@@ -8,8 +8,8 @@ import '@mysten/dapp-kit/dist/index.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'NFT Ticketing System',
-  description: 'AI-driven conversational NFT ticketing system built on Sui blockchain',
+  title: 'suiTicket',
+  description: 'suiTicket on Sui blockchain for smart ticketing',
 }
 
 export default function RootLayout({

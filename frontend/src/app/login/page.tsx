@@ -290,7 +290,7 @@ export default function LoginPage() {
       <header className="border-b border-gray-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-            NFT Ticketing System
+            suiTicket
           </Link>
         </div>
       </header>
