@@ -74,9 +74,14 @@ export default function ManageEventPage() {
       const eventIndex = savedEvents.findIndex((e: any) => e.id === eventId);
       
       if (eventIndex >= 0) {
+        // 更新票券類型的 isListed 狀態
         savedEvents[eventIndex] = {
           ...savedEvents[eventIndex],
-          ticketTypes,
+          ticketTypes: ticketTypes.map(t => ({
+            ...t,
+            // 保持 ticketTypeId 不變
+            ticketTypeId: savedEvents[eventIndex].ticketTypes?.find((tt: any) => tt.id === t.id)?.ticketTypeId,
+          })),
         };
       } else {
         savedEvents.push({
