@@ -37,14 +37,16 @@ export async function mintTicket(
     // Convert price from SUI to MIST (1 SUI = 10^9 MIST)
     const priceMist = BigInt(Math.floor(params.purchasePrice * 1_000_000_000));
 
-    // Prepare arguments
+    // Prepare optional arguments for Option<String>
+    // In Sui SDK, Option types need to be constructed manually
+    // For Option<String>, we use pure with the value or null
     const seatZoneArg = params.seatZone 
-      ? tx.pure.option('string', params.seatZone)
-      : tx.pure.option('string', null);
+      ? tx.pure.string(params.seatZone)
+      : tx.pure(null);
     
     const seatNumberArg = params.seatNumber
-      ? tx.pure.option('string', params.seatNumber)
-      : tx.pure.option('string', null);
+      ? tx.pure.string(params.seatNumber)
+      : tx.pure(null);
 
     tx.moveCall({
       target: `${PACKAGE_ID}::${TICKET_MODULE}::mint_ticket`,
