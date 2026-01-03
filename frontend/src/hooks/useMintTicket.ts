@@ -37,7 +37,7 @@ export function useMintTicket() {
         async (tx: TransactionBlock) => {
           return new Promise((resolve, reject) => {
             signAndExecuteTransaction(
-              { transaction: tx },
+              { transaction: tx as any }, // Type assertion for TransactionBlock compatibility
               {
                 onSuccess: (result) => resolve(result),
                 onError: (error) => reject(error),
@@ -79,7 +79,7 @@ export function useMintTicket() {
         async (tx: TransactionBlock) => {
           return new Promise((resolve, reject) => {
             signAndExecuteTransaction(
-              { transaction: tx },
+              { transaction: tx as any }, // Type assertion for TransactionBlock compatibility
               {
                 onSuccess: (result) => resolve(result),
                 onError: (error) => reject(error),
