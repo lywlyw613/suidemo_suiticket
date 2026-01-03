@@ -86,14 +86,21 @@ export default function LoginCallbackPage() {
                    window.history.replaceState(null, '', window.location.pathname);
                  }
 
-                 // 根據角色跳轉
-                 const redirectPath = role === 'organizer' ? '/organizer/dashboard' 
-                   : role === 'verifier' ? '/verifier/dashboard' 
-                   : '/customer/dashboard';
+                 // 根據角色跳轉（只在不在目標頁面時重定向）
+                 const currentPath = window.location.pathname;
+                 const isOnTargetPage = currentPath.startsWith('/organizer/') || 
+                                       currentPath.startsWith('/verifier/') || 
+                                       currentPath.startsWith('/customer/');
                  
-                 setTimeout(() => {
-                   router.replace(redirectPath);
-                 }, 1500);
+                 if (!isOnTargetPage) {
+                   const redirectPath = role === 'organizer' ? '/organizer/dashboard' 
+                     : role === 'verifier' ? '/verifier/dashboard' 
+                     : '/customer/dashboard';
+                   
+                   setTimeout(() => {
+                     router.replace(redirectPath);
+                   }, 1500);
+                 }
                } else {
                  hasProcessed.current = false; // 允許重試
                  throw new Error('Failed to create user session');
