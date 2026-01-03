@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authAPI } from '@/lib/api';
+import { getCurrentUser } from '@/lib/frontendAuth';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useZkLoginSession } from '@mysten/enoki/react';
 import { getSuiBalance, formatSuiBalance, requestFaucet } from '@/lib/enokiWallet';
@@ -38,20 +38,18 @@ export default function ProfilePage() {
       return;
     }
 
-    authAPI.me()
-      .then((res) => {
-        if (res.data.success) {
-          setUser(res.data.user);
-        } else {
-          router.push('/login');
-        }
-      })
-      .catch(() => {
-        router.push('/login');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // 純前端：從 localStorage 讀取用戶數據
+    const user = getCurrentUser();
+    if (user) {
+      setUser(user);
+    } else {
+      // 用戶數據不存在，清除並跳轉
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      router.push('/login');
+    }
+    setLoading(false);
   }, [router]);
 
   // 獲取餘額

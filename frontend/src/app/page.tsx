@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getAllDemoEvents } from '@/lib/demoEvents';
 
 export default function Home() {
   const router = useRouter();
@@ -149,6 +150,69 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Event */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Event</h2>
+            <p className="text-lg text-gray-800">Experience the future of ticketing</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <Link
+              href="/events/demo-taipei-jazz-2026"
+              className="block card-hover group"
+            >
+              <div className="bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 rounded-2xl p-8 text-white">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex-1">
+                    <div className="inline-block px-4 py-1 bg-white/20 rounded-full text-sm font-semibold mb-4">
+                      Music
+                    </div>
+                    <h3 className="text-3xl font-bold mb-3">Taipei Neo-Jazz Night 2026: Rhythms of the City</h3>
+                    <p className="text-lg opacity-90 mb-4">
+                      Immerse yourself in an evening of soulful melodies and improvisation at the prestigious National Concert Hall.
+                    </p>
+                    <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Feb 1, 2026</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>National Concert Hall, Taipei</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="ml-6">
+                    <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 pt-6 border-t border-white/20">
+                  <div className="flex-1">
+                    <p className="text-sm opacity-80 mb-2">Ticket Types Available</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">VVIP - 150 SUI</span>
+                      <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">Grand Tier - 80 SUI</span>
+                      <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">Balcony - 35 SUI</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Link>
           </div>

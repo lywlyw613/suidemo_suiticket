@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authAPI } from '@/lib/api';
+import { getCurrentUser } from '@/lib/frontendAuth';
 
 export default function CustomerDashboard() {
   const router = useRouter();
@@ -11,38 +11,24 @@ export default function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 純前端：從 localStorage 讀取用戶數據
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
       return;
     }
 
-    authAPI.me()
-      .then((res) => {
-        if (res.data.success) {
-          setUser(res.data.user);
-        } else {
-          // Token 無效，清除並跳轉
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('userRole');
-          router.push('/login');
-        }
-      })
-      .catch((err) => {
-        console.error('Auth check error:', err);
-        // 如果是 401，說明 token 無效
-        if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('userRole');
-        }
-        // 其他錯誤可能是網絡問題，暫時不跳轉，讓用戶看到錯誤
-        setLoading(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const user = getCurrentUser();
+    if (user) {
+      setUser(user);
+    } else {
+      // 用戶數據不存在，清除並跳轉
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      router.push('/login');
+    }
+    setLoading(false);
   }, [router]);
 
   const handleLogout = () => {

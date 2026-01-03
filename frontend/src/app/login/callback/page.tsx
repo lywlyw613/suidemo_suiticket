@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEnokiFlow, useZkLoginSession } from '@mysten/enoki/react';
-import { authAPI } from '@/lib/api';
+import { useZkLoginFrontend } from '@/lib/frontendAuth';
 
 export default function LoginCallbackPage() {
   const router = useRouter();
@@ -15,6 +15,7 @@ export default function LoginCallbackPage() {
   // Hooks must be called unconditionally, but we check mounted before using them
   const enokiFlow = useEnokiFlow();
   const session = useZkLoginSession();
+  const zkLoginFrontend = useZkLoginFrontend();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processing login...');
   const hasProcessed = useRef(false); // 防止重複執行
@@ -63,61 +64,54 @@ export default function LoginCallbackPage() {
     const jwt = session?.jwt;
     if (!jwt) return;
 
-    const processLogin = async () => {
-      hasProcessed.current = true; // 標記為已處理
+           const processLogin = async () => {
+             hasProcessed.current = true; // 標記為已處理
 
-      try {
-        console.log('Session initialized, starting login process...');
+             try {
+               console.log('Session initialized, starting login process...');
 
-        // 發送到後端驗證並建立 session
-        const response = await authAPI.login('google', jwt);
+               // 從 sessionStorage 獲取角色
+               const role = (sessionStorage.getItem('pendingLoginRole') || 'customer') as 'customer' | 'organizer' | 'verifier';
+               sessionStorage.removeItem('pendingLoginRole');
 
-        if (response.data.success) {
-          // 保存 token
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+               // 使用純前端登入（無需後端）
+               const user = await zkLoginFrontend.login(role);
 
-          setStatus('success');
-          setMessage('Login successful! Redirecting...');
+               if (user) {
+                 setStatus('success');
+                 setMessage('Login successful! Redirecting...');
 
-          // 清除 URL hash
-          if (typeof window !== 'undefined') {
-            window.history.replaceState(null, '', window.location.pathname);
-          }
+                 // 清除 URL hash
+                 if (typeof window !== 'undefined') {
+                   window.history.replaceState(null, '', window.location.pathname);
+                 }
 
-          // 從 sessionStorage 獲取角色（在登入時保存的），或默認客戶
-          const role = sessionStorage.getItem('pendingLoginRole') || 'customer';
-          sessionStorage.removeItem('pendingLoginRole'); // 清除臨時數據
-          localStorage.setItem('userRole', role);
-
-          // 根據角色跳轉
-          const redirectPath = role === 'organizer' ? '/organizer/dashboard' 
-            : role === 'verifier' ? '/verifier/dashboard' 
-            : '/customer/dashboard';
-          
-          setTimeout(() => {
-            router.replace(redirectPath);
-          }, 1500);
-        } else {
-          hasProcessed.current = false; // 允許重試
-          throw new Error(response.data.error || 'Login failed');
-        }
-      } catch (error: any) {
-        console.error('Login error:', error);
-        hasProcessed.current = false; // 允許重試
-        setStatus('error');
-        
-        // 提供更友好的錯誤訊息
-        let errorMessage = error.message || 'Login failed, please try again';
-        if (error.response?.status === 500) {
-          errorMessage = 'Server error, please try again';
-        } else if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
-          errorMessage = 'Rate limit exceeded, please wait 10-15 minutes and try again';
-        }
-        
-        setMessage(errorMessage);
-      }
-    };
+                 // 根據角色跳轉
+                 const redirectPath = role === 'organizer' ? '/organizer/dashboard' 
+                   : role === 'verifier' ? '/verifier/dashboard' 
+                   : '/customer/dashboard';
+                 
+                 setTimeout(() => {
+                   router.replace(redirectPath);
+                 }, 1500);
+               } else {
+                 hasProcessed.current = false; // 允許重試
+                 throw new Error('Failed to create user session');
+               }
+             } catch (error: any) {
+               console.error('Login error:', error);
+               hasProcessed.current = false; // 允許重試
+               setStatus('error');
+               
+               // 提供更友好的錯誤訊息
+               let errorMessage = error.message || 'Login failed, please try again';
+               if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
+                 errorMessage = 'Rate limit exceeded, please wait 10-15 minutes and try again';
+               }
+               
+               setMessage(errorMessage);
+             }
+           };
 
            processLogin();
          }, [mounted, session, router]);

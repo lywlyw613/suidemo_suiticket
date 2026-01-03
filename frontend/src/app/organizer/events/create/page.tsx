@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { eventAPI, uploadAPI } from '@/lib/api';
+import { useMintTicket } from '@/hooks/useMintTicket';
+import { DEMO_TICKET_ADMIN_ID, isDemoMode } from '@/lib/demoData';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 
 type EventData = {
   name: string;
@@ -66,7 +69,7 @@ export default function CreateEventPage() {
 
   const [ticketTypes, setTicketTypes] = useState<TicketTypeData[]>([]);
 
-  // Step 1: Basic Information
+  // Demo 模式：純前端創建活動
   const handleStep1Submit = async () => {
     if (!eventData.name || !eventData.startTime || !eventData.endTime) {
       alert('Please fill in all required fields');
@@ -75,20 +78,19 @@ export default function CreateEventPage() {
 
     setLoading(true);
     try {
-      const response = await eventAPI.create(eventData);
-      if (response.data.success) {
-        setEventId(response.data.data.id);
-        setStep(2);
-      }
+      // Demo 模式：直接生成 event ID，不調用後端
+      const demoEventId = `demo-event-${Date.now()}`;
+      setEventId(demoEventId);
+      setStep(2);
     } catch (error: any) {
       console.error('Failed to create event:', error);
-      alert(error.response?.data?.error || 'Failed to create event');
+      alert('Failed to create event');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Ticketing Setup
+  // Demo 模式：純前端保存票種配置
   const handleStep2Submit = async () => {
     if (ticketTypes.length === 0) {
       alert('Please add at least one ticket type');
@@ -97,25 +99,24 @@ export default function CreateEventPage() {
 
     setLoading(true);
     try {
-      // Create ticket types
-      for (const ticketType of ticketTypes) {
-        await eventAPI.createTicketType(eventId!, ticketType);
-      }
+      // Demo 模式：直接保存到本地狀態，不調用後端
+      // 實際部署時，這裡會調用 Move 合約的 mint_ticket 函數
+      console.log('Ticket types configured:', ticketTypes);
       setStep(3);
     } catch (error: any) {
       console.error('Failed to create ticket types:', error);
-      alert(error.response?.data?.error || 'Failed to create ticket types');
+      alert('Failed to create ticket types');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 3: Image Upload
+  // Demo 模式：圖片上傳（使用本地 URL 或 Walrus）
   const handleImageUpload = async (file: File, type: 'hero' | 'gallery' | 'seatMap') => {
     try {
-      const response = await uploadAPI.uploadImage(file);
-      if (response.data.success) {
-        const { blobId, imageUrl } = response.data.data;
+      // Demo 模式：使用本地 URL（實際部署時使用 Walrus）
+      const imageUrl = URL.createObjectURL(file);
+      const blobId = `demo-blob-${Date.now()}`;
         
         if (type === 'hero') {
           setEventData({ ...eventData, heroImageUrl: imageUrl, heroImageBlobId: blobId });
@@ -143,23 +144,34 @@ export default function CreateEventPage() {
     setStep(4);
   };
 
-  // Step 4: Preview & Publish
+  // Step 4: Preview & Publish - Demo 模式
   const handlePublish = async () => {
     if (!eventId) return;
 
     setLoading(true);
     try {
-      // Update event with all data
-      await eventAPI.update(eventId, eventData);
-      
-      // Publish event
-      const response = await eventAPI.publish(eventId);
-      if (response.data.success) {
-        router.push(`/organizer/events/${eventId}`);
+      // Demo 模式：直接保存到 localStorage
+      const eventDataToSave = {
+        id: eventId,
+        ...eventData,
+        ticketTypes,
+        status: 'published',
+        createdAt: new Date().toISOString(),
+      };
+      const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
+      const existingIndex = savedEvents.findIndex((e: any) => e.id === eventId);
+      if (existingIndex >= 0) {
+        savedEvents[existingIndex] = eventDataToSave;
+      } else {
+        savedEvents.push(eventDataToSave);
       }
+      localStorage.setItem('demo_events', JSON.stringify(savedEvents));
+      
+      alert('Event published successfully! (Demo mode)');
+      router.push('/organizer/dashboard');
     } catch (error: any) {
       console.error('Failed to publish event:', error);
-      alert(error.response?.data?.error || 'Failed to publish event');
+      alert('Failed to publish event');
     } finally {
       setLoading(false);
     }
@@ -170,7 +182,23 @@ export default function CreateEventPage() {
 
     setLoading(true);
     try {
-      await eventAPI.update(eventId, eventData);
+      // Demo 模式：保存到 localStorage
+      const eventDataToSave = {
+        id: eventId,
+        ...eventData,
+        ticketTypes,
+        status: 'draft',
+        createdAt: new Date().toISOString(),
+      };
+      const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
+      const existingIndex = savedEvents.findIndex((e: any) => e.id === eventId);
+      if (existingIndex >= 0) {
+        savedEvents[existingIndex] = eventDataToSave;
+      } else {
+        savedEvents.push(eventDataToSave);
+      }
+      localStorage.setItem('demo_events', JSON.stringify(savedEvents));
+      
       router.push('/organizer/dashboard');
     } catch (error: any) {
       console.error('Failed to save draft:', error);

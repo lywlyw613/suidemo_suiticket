@@ -3,12 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authAPI } from '@/lib/api';
-import { verificationAPI } from '@/lib/api';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { getTicketNFT, verifyTicket, parseTicketQRCode } from '@/lib/suiTicket';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 export default function VerifierDashboard() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const currentAccount = useCurrentAccount();
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [ticketId, setTicketId] = useState('');
   const [eventId, setEventId] = useState('');
@@ -16,33 +19,15 @@ export default function VerifierDashboard() {
   const [result, setResult] = useState<{ success: boolean; message: string; data?: any } | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-      return;
+    setMounted(true);
+    // Check if wallet is connected
+    if (!currentAccount?.address) {
+      // Allow access but show warning
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
-
-    authAPI.me()
-      .then((res) => {
-        if (res.data.success) {
-          setUser(res.data.user);
-        } else {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('userRole');
-          router.push('/login');
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('userRole');
-        router.push('/login');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [router]);
+  }, [currentAccount]);
 
   const handleVerify = async () => {
     if (!ticketId || !eventId) {
@@ -53,46 +38,72 @@ export default function VerifierDashboard() {
       return;
     }
 
+    if (!currentAccount?.address) {
+      setResult({
+        success: false,
+        message: 'Please connect wallet first',
+      });
+      return;
+    }
+
     setVerifying(true);
     setResult(null);
 
     try {
-      const response = await verificationAPI.verify({
-        ticketId,
-        eventId,
-        verifierId: user?.id || 'unknown',
-      });
-
-      if (response.data.success) {
-        setResult({
-          success: true,
-          message: 'Verification successful!',
-          data: response.data,
-        });
-        setTicketId('');
-        setEventId('');
-      } else {
+      // Query ticket from chain
+      const ticket = await getTicketNFT(ticketId);
+      
+      if (!ticket) {
         setResult({
           success: false,
-          message: response.data.error || 'Verification failed',
+          message: 'Ticket not found on chain',
         });
+        setVerifying(false);
+        return;
       }
+
+      if (ticket.eventId !== eventId) {
+        setResult({
+          success: false,
+          message: 'Ticket not for this event',
+        });
+        setVerifying(false);
+        return;
+      }
+
+      if (ticket.isUsed) {
+        setResult({
+          success: false,
+          message: 'Ticket already used',
+        });
+        setVerifying(false);
+        return;
+      }
+
+      // For demo: just show ticket info (actual verification requires GateCap)
+      setResult({
+        success: true,
+        message: 'Ticket is valid (Demo mode - requires GateCap for actual verification)',
+        data: {
+          ticketNumber: ticket.ticketNumber,
+          ticketType: ticket.ticketType,
+          seatZone: ticket.seatZone,
+          seatNumber: ticket.seatNumber,
+          owner: ticket.owner,
+        },
+      });
+      setTicketId('');
+      setEventId('');
     } catch (error: any) {
       setResult({
         success: false,
-        message: error.response?.data?.error || 'Verification failed, please try again',
+        message: error.message || 'Verification failed, please try again',
       });
     } finally {
       setVerifying(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userRole');
-    router.push('/');
-  };
 
   if (loading) {
     return (
@@ -111,20 +122,17 @@ export default function VerifierDashboard() {
             NFT Ticketing System - Verification
           </Link>
           <div className="flex items-center gap-4">
-            {user && (
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-800">{user.name}</p>
-                  <p className="text-xs text-gray-700">Verifier</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
-                >
-                  Sign Out
-                </button>
+            {currentAccount && (
+              <div className="text-sm text-gray-700">
+                {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
               </div>
             )}
+            <Link
+              href="/"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+            >
+              Home
+            </Link>
           </div>
         </div>
       </header>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authAPI, eventAPI } from '@/lib/api';
+import { getCurrentUser } from '@/lib/frontendAuth';
 
 export default function OrganizerDashboard() {
   const router = useRouter();
@@ -20,47 +20,46 @@ export default function OrganizerDashboard() {
       return;
     }
 
-    authAPI.me()
-      .then((res) => {
-        if (res.data.success) {
-          setUser(res.data.user);
-        } else {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('userRole');
-          router.push('/login');
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('userRole');
-        router.push('/login');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // 純前端：從 localStorage 讀取用戶數據
+    const user = getCurrentUser();
+    if (user) {
+      setUser(user);
+    } else {
+      // 用戶數據不存在，清除並跳轉
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      router.push('/login');
+    }
+    setLoading(false);
   }, [router]);
 
-  // Load events
+  // Load events - Demo 模式：從 localStorage 讀取或使用 demo 數據
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const response = await eventAPI.getOrganizerEvents();
-        if (response.data.success) {
-          setEvents(response.data.data.events || []);
-          // Calculate stats
-          const published = response.data.data.events.filter((e: any) => e.status === 'published').length;
-          const drafts = response.data.data.events.filter((e: any) => e.status === 'draft').length;
-          setStats({
-            totalEvents: response.data.data.events.length,
-            publishedEvents: published,
-            draftEvents: drafts,
-          });
-        }
+        // 從 localStorage 讀取保存的活動
+        const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
+        
+        // 如果沒有保存的活動，使用 demo 數據
+        const demoEvents = savedEvents.length > 0 ? savedEvents : [
+          {
+            id: 'demo-taipei-jazz-2026',
+            name: 'Taipei Neo-Jazz Night 2026: Rhythms of the City',
+            status: 'published',
+            startTime: '2026-02-01T19:30:00+08:00',
+            createdAt: new Date().toISOString(),
+          },
+        ];
+        
+        setEvents(demoEvents);
+        setStats({
+          totalEvents: demoEvents.length,
+          publishedEvents: demoEvents.filter((e: any) => e.status === 'published').length,
+          draftEvents: demoEvents.filter((e: any) => e.status === 'draft').length,
+        });
       } catch (error: any) {
         console.error('Failed to load events:', error);
-        // If error, just show empty state
         setEvents([]);
       } finally {
         setEventsLoading(false);
