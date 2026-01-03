@@ -22,16 +22,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     },
   }));
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // Always provide the providers, even during SSR
+  // This ensures hooks can be called during SSR without errors
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networks} defaultNetwork="devnet">
