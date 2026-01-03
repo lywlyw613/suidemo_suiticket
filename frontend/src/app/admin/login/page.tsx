@@ -126,6 +126,26 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
+          {/* Demo Mode - Direct Access */}
+          <div className="border-t border-gray-200 pt-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Demo Mode</h2>
+            <button
+              onClick={() => {
+                // Set demo admin access
+                localStorage.setItem('is_admin', 'true');
+                localStorage.setItem('userRole', 'admin');
+                localStorage.setItem('admin_wallet', 'demo-admin-address');
+                router.push('/admin/dashboard');
+              }}
+              className="w-full px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-all"
+            >
+              🎭 Enter as Admin (Demo Mode)
+            </button>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Click to access admin dashboard without wallet connection (for demo/screenshots)
+            </p>
+          </div>
+
           <div className="pt-4 border-t border-gray-200">
             <Link
               href="/"
