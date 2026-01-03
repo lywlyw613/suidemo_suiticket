@@ -8,13 +8,14 @@ import * as React from 'react';
 import { useEnokiFlow } from '@mysten/enoki/react';
 import { useCurrentAccount, useConnectWallet, useWallets } from '@mysten/dapp-kit';
 import { useWalletLogin, useZkLoginFrontend } from '@/lib/frontendAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 type Role = 'customer' | 'organizer' | 'verifier' | null;
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   
   // Hooks must be called unconditionally at the top level
@@ -34,9 +35,22 @@ export default function LoginPage() {
     setMounted(true);
   }, []);
 
+  // 從 URL 參數讀取 role
   useEffect(() => {
     if (!mounted) return;
-    // 如果用戶已經選擇了角色，不要自動重定向（讓用戶完成登入流程）
+    const roleParam = searchParams.get('role');
+    if (roleParam && (roleParam === 'customer' || roleParam === 'organizer' || roleParam === 'verifier')) {
+      // 如果 URL 中有 role 參數，清除舊的登入狀態，使用新的角色
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      setSelectedRole(roleParam as Role);
+    }
+  }, [mounted, searchParams]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    // 如果用戶已經選擇了角色（包括從 URL 參數），不要自動重定向
     if (selectedRole) {
       return;
     }
