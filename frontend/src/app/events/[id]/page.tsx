@@ -8,7 +8,6 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getDemoEvent, type DemoEvent } from '@/lib/demoEvents';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import Image from 'next/image';
 
 export default function EventDetailPage() {
   const router = useRouter();
@@ -96,7 +95,6 @@ export default function EventDetailPage() {
               </div>
               <h1 className="text-5xl font-bold mb-4">{event.name}</h1>
               <p className="text-xl opacity-90">{event.description}</p>
-              </p>
             </div>
           </div>
         </div>

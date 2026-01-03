@@ -117,18 +117,17 @@ export default function CreateEventPage() {
       // Demo 模式：使用本地 URL（實際部署時使用 Walrus）
       const imageUrl = URL.createObjectURL(file);
       const blobId = `demo-blob-${Date.now()}`;
-        
-        if (type === 'hero') {
-          setEventData({ ...eventData, heroImageUrl: imageUrl, heroImageBlobId: blobId });
-        } else if (type === 'gallery') {
-          setEventData({
-            ...eventData,
-            galleryUrls: [...eventData.galleryUrls, imageUrl],
-            galleryBlobIds: [...eventData.galleryBlobIds, blobId],
-          });
-        } else if (type === 'seatMap') {
-          setEventData({ ...eventData, seatMapUrl: imageUrl, seatMapBlobId: blobId });
-        }
+      
+      if (type === 'hero') {
+        setEventData({ ...eventData, heroImageUrl: imageUrl, heroImageBlobId: blobId });
+      } else if (type === 'gallery') {
+        setEventData({
+          ...eventData,
+          galleryUrls: [...eventData.galleryUrls, imageUrl],
+          galleryBlobIds: [...eventData.galleryBlobIds, blobId],
+        });
+      } else if (type === 'seatMap') {
+        setEventData({ ...eventData, seatMapUrl: imageUrl, seatMapBlobId: blobId });
       }
     } catch (error: any) {
       console.error('Failed to upload image:', error);
