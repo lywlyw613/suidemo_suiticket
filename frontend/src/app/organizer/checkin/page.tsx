@@ -151,7 +151,7 @@ export default function OrganizerCheckInPage() {
 
       signAndExecuteTransaction(
         {
-          transaction: tx,
+          transaction: tx as any, // Type assertion for TransactionBlock compatibility
         },
         {
           onSuccess: (result) => {
