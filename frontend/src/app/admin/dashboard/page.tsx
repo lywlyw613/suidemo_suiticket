@@ -20,14 +20,34 @@ export default function AdminDashboard() {
     const isAdmin = localStorage.getItem('is_admin') === 'true';
     const userRole = localStorage.getItem('userRole');
     
-    // Only redirect if not already on login page to avoid infinite loop
-    if (!isAdmin && window.location.pathname !== '/admin/login') {
+    // Only redirect if not admin and not already on login page to avoid infinite loop
+    if ((!isAdmin || userRole !== 'admin') && window.location.pathname !== '/admin/login') {
       router.push('/admin/login');
     }
   }, [mounted, router]);
 
   if (!mounted) {
     return null;
+  }
+
+  // Additional check before rendering content
+  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('is_admin') === 'true';
+  const userRole = typeof window !== 'undefined' && localStorage.getItem('userRole') === 'admin';
+
+  if (!isAdmin || userRole !== 'admin') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-800 mb-4">Please login as admin first</p>
+          <Link
+            href="/admin/login"
+            className="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all"
+          >
+            Go to Admin Login
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   // Demo data
