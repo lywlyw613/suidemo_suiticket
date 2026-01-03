@@ -145,20 +145,83 @@ export default function CreateEventPage() {
     setStep(4);
   };
 
-  // Step 4: Preview & Publish - Demo 模式
+  // Step 4: Preview & Publish - 創建 Move 合約中的票券類型並發布
   const handlePublish = async () => {
-    if (!eventId) return;
+    if (!eventId || !currentAccount?.address) {
+      alert('Please connect wallet first');
+      return;
+    }
 
     setLoading(true);
     try {
-      // Demo 模式：直接保存到 localStorage
+      const ticketTypeIds: string[] = [];
+      
+      // 為每個要發布的票種創建 Move 合約中的 TicketType
+      for (const ticketType of ticketTypes) {
+        if (ticketType.isListed) {
+          // 創建票券類型
+          const createResult = await createTicketType(
+            DEMO_TICKET_ADMIN_ID,
+            {
+              eventId: eventId,
+              ticketTypeName: ticketType.name,
+              price: ticketType.price,
+              totalQuantity: ticketType.quantity,
+              organizerId: currentAccount.address,
+            },
+            async (tx: TransactionBlock) => {
+              return new Promise((resolve, reject) => {
+                signAndExecuteTransaction(
+                  { transaction: tx as any },
+                  {
+                    onSuccess: (result) => resolve(result),
+                    onError: (error) => reject(error),
+                  }
+                );
+              });
+            }
+          );
+
+          if (createResult.success && createResult.ticketTypeId) {
+            ticketTypeIds.push(createResult.ticketTypeId);
+            
+            // 發布票券類型（設置為可銷售）
+            await publishTicketType(
+              createResult.ticketTypeId,
+              async (tx: TransactionBlock) => {
+                return new Promise((resolve, reject) => {
+                  signAndExecuteTransaction(
+                    { transaction: tx as any },
+                    {
+                      onSuccess: (result) => resolve(result),
+                      onError: (error) => reject(error),
+                    }
+                  );
+                });
+              }
+            );
+          } else {
+            throw new Error(createResult.error || 'Failed to create ticket type');
+          }
+        }
+      }
+
+      // 保存到 localStorage，包含 ticketTypeIds
       const eventDataToSave = {
         id: eventId,
         ...eventData,
-        ticketTypes,
+        ticketTypes: ticketTypes.map((t, index) => {
+          const listedIndex = ticketTypes.filter(tt => tt.isListed).findIndex(tt => tt === t);
+          return {
+            ...t,
+            ticketTypeId: t.isListed && ticketTypeIds[listedIndex] ? ticketTypeIds[listedIndex] : undefined,
+          };
+        }),
         status: 'published',
+        organizerId: currentAccount.address,
         createdAt: new Date().toISOString(),
       };
+      
       const savedEvents = JSON.parse(localStorage.getItem('demo_events') || '[]');
       const existingIndex = savedEvents.findIndex((e: any) => e.id === eventId);
       if (existingIndex >= 0) {
@@ -168,11 +231,11 @@ export default function CreateEventPage() {
       }
       localStorage.setItem('demo_events', JSON.stringify(savedEvents));
       
-      alert('Event published successfully! (Demo mode)');
+      alert(`Event published successfully! Created ${ticketTypeIds.length} ticket types on-chain.`);
       router.push('/organizer/dashboard');
     } catch (error: any) {
       console.error('Failed to publish event:', error);
-      alert('Failed to publish event');
+      alert(`Failed to publish event: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
