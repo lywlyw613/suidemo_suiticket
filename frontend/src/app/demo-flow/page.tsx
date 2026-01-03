@@ -53,7 +53,13 @@ export default function DemoFlowPage() {
     },
     {
       title: '8. My Tickets List',
-      description: 'View purchased tickets',
+      description: 'View purchased tickets (with demo tickets)',
+      url: '/customer/tickets/demo',
+      button: 'Go to My Tickets (Demo)',
+    },
+    {
+      title: '8b. My Tickets List (Real)',
+      description: 'View purchased tickets (requires wallet)',
       url: '/customer/tickets',
       button: 'Go to My Tickets',
     },
