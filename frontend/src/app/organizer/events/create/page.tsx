@@ -177,7 +177,11 @@ export default function CreateEventPage() {
                   { transaction: tx as any },
                   {
                     onSuccess: (result) => resolve(result),
-                    onError: (error) => reject(error),
+                    onError: (error: any) => {
+                      // 確保錯誤對象可以被正確處理
+                      const errorMessage = error?.message || error?.toString() || 'Transaction failed';
+                      reject(new Error(errorMessage));
+                    },
                   }
                 );
               });
@@ -237,7 +241,18 @@ export default function CreateEventPage() {
       router.push('/organizer/dashboard');
     } catch (error: any) {
       console.error('Failed to publish event:', error);
-      alert(`Failed to publish event: ${error.message || 'Unknown error'}`);
+      // 安全地提取錯誤訊息
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.toString) {
+        errorMessage = error.toString();
+      }
+      alert(`Failed to publish event: ${errorMessage}`);
     } finally {
       setLoading(false);
     }

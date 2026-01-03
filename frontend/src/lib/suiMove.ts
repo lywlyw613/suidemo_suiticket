@@ -146,9 +146,20 @@ export async function createTicketType(
     };
   } catch (error: any) {
     console.error('Create ticket type error:', error);
+    // 安全地提取錯誤訊息
+    let errorMessage = 'Failed to create ticket type';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error?.message) {
+      errorMessage = error.message;
+    } else if (error?.toString) {
+      errorMessage = error.toString();
+    }
     return {
       success: false,
-      error: error.message || 'Failed to create ticket type',
+      error: errorMessage,
     };
   }
 }
@@ -178,9 +189,20 @@ export async function publishTicketType(
     };
   } catch (error: any) {
     console.error('Publish ticket type error:', error);
+    // 安全地提取錯誤訊息
+    let errorMessage = 'Failed to publish ticket type';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error?.message) {
+      errorMessage = error.message;
+    } else if (error?.toString) {
+      errorMessage = error.toString();
+    }
     return {
       success: false,
-      error: error.message || 'Failed to publish ticket type',
+      error: errorMessage,
     };
   }
 }
