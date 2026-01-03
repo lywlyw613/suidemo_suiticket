@@ -66,34 +66,42 @@ When users ask about events, tickets, prices, seating, or purchase information, 
 
     if (provider === 'gemini') {
       // Use Google Gemini
-      const model = genAI!.getGenerativeModel({ model: 'gemini-pro' });
-      
-      // Build the full prompt with system instructions and conversation
-      // For Gemini, we'll include the system prompt as part of the first message
-      const conversationHistory = messages
-        .filter((msg: any) => msg.role !== 'system') // Exclude system messages
-        .map((msg: any) => ({
-          role: msg.role === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.content }],
-        }));
-
-      // Combine system prompt with the last user message
-      const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop();
-      const fullPrompt = `${systemPrompt}\n\nUser: ${lastUserMessage?.content || ''}`;
-
-      // Start a chat with history
-      const chat = model.startChat({
-        history: conversationHistory.slice(0, -1), // All messages except the last one
+      const model = genAI!.getGenerativeModel({ 
+        model: 'gemini-pro',
         generationConfig: {
           temperature: 0.7,
           maxOutputTokens: 500,
         },
       });
+      
+      // Build conversation history for Gemini
+      // Gemini uses 'user' and 'model' roles
+      const history = messages
+        .filter((msg: any) => msg.role !== 'system')
+        .slice(0, -1) // All messages except the last one
+        .map((msg: any) => ({
+          role: msg.role === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.content }],
+        }));
 
-      // Send the last message with system context
-      const result = await chat.sendMessage(fullPrompt);
-      const response = await result.response;
-      assistantMessage = response.text();
+      // Get the last user message
+      const lastMessage = messages[messages.length - 1];
+      const userMessage = lastMessage?.content || '';
+
+      // Combine system prompt with user message
+      const fullPrompt = `${systemPrompt}\n\nUser: ${userMessage}`;
+
+      // Use startChat if we have history, otherwise use generateContent
+      if (history.length > 0) {
+        const chat = model.startChat({ history });
+        const result = await chat.sendMessage(userMessage);
+        const response = await result.response;
+        assistantMessage = response.text();
+      } else {
+        const result = await model.generateContent(fullPrompt);
+        const response = await result.response;
+        assistantMessage = response.text();
+      }
     } else {
       // Use OpenAI
       const completion = await openai!.chat.completions.create({
