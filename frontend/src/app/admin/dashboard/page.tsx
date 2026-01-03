@@ -32,7 +32,7 @@ export default function AdminDashboard() {
 
   // Additional check before rendering content
   const isAdmin = typeof window !== 'undefined' && localStorage.getItem('is_admin') === 'true';
-  const userRole = typeof window !== 'undefined' && localStorage.getItem('userRole') === 'admin';
+  const userRole = typeof window !== 'undefined' ? localStorage.getItem('userRole') : null;
 
   if (!isAdmin || userRole !== 'admin') {
     return (
