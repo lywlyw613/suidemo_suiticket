@@ -12,6 +12,11 @@ import { getUserTickets, type TicketNFT } from '@/lib/suiTicket';
 type TicketCategory = 'all' | 'upcoming' | 'used' | 'expired';
 
 export default function MyTicketsPage() {
+  // Early return for SSR
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
   const router = useRouter();
   const currentAccount = useCurrentAccount();
   const [mounted, setMounted] = useState(false);
