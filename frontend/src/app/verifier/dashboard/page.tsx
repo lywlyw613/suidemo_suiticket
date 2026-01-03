@@ -136,12 +136,18 @@ export default function VerifierDashboard() {
                 {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
               </div>
             )}
-            <Link
-              href="/"
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
-            >
-              Home
-            </Link>
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+          >
+            ← Back
+          </button>
+          <Link
+            href="/"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+          >
+            Home
+          </Link>
           </div>
         </div>
       </header>
