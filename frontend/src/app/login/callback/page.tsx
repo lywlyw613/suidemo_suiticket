@@ -70,8 +70,14 @@ export default function LoginCallbackPage() {
              try {
                console.log('Session initialized, starting login process...');
 
-               // 從 sessionStorage 獲取角色
-               const role = (sessionStorage.getItem('pendingLoginRole') || 'customer') as 'customer' | 'organizer' | 'verifier';
+               // 從 sessionStorage 獲取角色，如果沒有則從 localStorage 獲取，最後才默認 customer
+               let role = sessionStorage.getItem('pendingLoginRole') as 'customer' | 'organizer' | 'verifier' | null;
+               if (!role) {
+                 role = localStorage.getItem('userRole') as 'customer' | 'organizer' | 'verifier' | null;
+               }
+               if (!role) {
+                 role = 'customer';
+               }
                sessionStorage.removeItem('pendingLoginRole');
 
                // 使用純前端登入（無需後端）
