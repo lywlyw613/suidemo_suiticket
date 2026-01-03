@@ -94,11 +94,15 @@ export default function VerifierDashboard() {
         success: true,
         message: 'Ticket is valid (Demo mode - requires GateCap for actual verification)',
         data: {
+          ticketId: ticketId,
           ticketNumber: ticket.ticketNumber,
           ticketType: ticket.ticketType,
           seatZone: ticket.seatZone,
           seatNumber: ticket.seatNumber,
           owner: ticket.owner,
+          eventId: ticket.eventId,
+          eventName: ticket.eventName,
+          isUsed: ticket.isUsed,
         },
       });
       setTicketId('');
@@ -136,18 +140,12 @@ export default function VerifierDashboard() {
                 {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
               </div>
             )}
-          <button
-            onClick={() => router.back()}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
-          >
-            ← Back
-          </button>
-          <Link
-            href="/"
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
-          >
-            Home
-          </Link>
+            <Link
+              href="/"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+            >
+              Home
+            </Link>
           </div>
         </div>
       </header>
@@ -230,9 +228,32 @@ export default function VerifierDashboard() {
                     {result.message}
                   </p>
                   {result.success && result.data && (
-                    <div className="mt-3 text-sm text-gray-700 space-y-1">
-                      {result.data.ownerAddress && (
-                        <p>Owner Address: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{result.data.ownerAddress}</code></p>
+                    <div className="mt-3 text-sm text-gray-700 space-y-3">
+                      <div>
+                        <p className="font-semibold mb-1">Ticket Details:</p>
+                        <p>Ticket Number: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{result.data.ticketNumber}</code></p>
+                        <p>Ticket Type: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{result.data.ticketType}</code></p>
+                        {result.data.seatZone && (
+                          <p>Seat Zone: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{result.data.seatZone}</code></p>
+                        )}
+                        {result.data.seatNumber && (
+                          <p>Seat Number: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{result.data.seatNumber}</code></p>
+                        )}
+                        <p>Owner: <code className="bg-gray-100 px-2 py-1 rounded text-xs break-all">{result.data.owner?.slice(0, 20)}...</code></p>
+                      </div>
+                      {result.data.ticketId && (
+                        <div className="pt-3 border-t border-emerald-200">
+                          <Link
+                            href={`/tickets/compare?id=${result.data.ticketId}`}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            View Ticket Comparison
+                          </Link>
+                        </div>
                       )}
                     </div>
                   )}
