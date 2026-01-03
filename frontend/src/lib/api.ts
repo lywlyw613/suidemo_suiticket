@@ -9,13 +9,10 @@ const getApiUrl = () => {
     return process.env.NEXT_PUBLIC_API_URL;
   }
   
-  // 如果在 Vercel 上（生產環境），需要後端 URL
-  // 注意：後端也需要部署到某個地方（如 Railway, Render 等）
+  // 如果在 Vercel 上（生產環境），使用 Railway 後端 URL
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-    // 生產環境：需要設置 NEXT_PUBLIC_API_URL 環境變數指向部署的後端
-    console.warn('⚠️ 生產環境需要設置 NEXT_PUBLIC_API_URL 環境變數指向後端服務器');
-    // 暫時返回 localhost（這在生產環境不會工作，需要部署後端）
-    return 'http://localhost:3001';
+    // 生產環境：使用 Railway 後端（如果沒有設置環境變量）
+    return 'https://suidemosuiticket-production.up.railway.app';
   }
   
   // 開發環境：使用 localhost
