@@ -28,7 +28,8 @@ export default function AdminLoginPage() {
     const isAdmin = localStorage.getItem('is_admin') === 'true';
     const userRole = localStorage.getItem('userRole');
     
-    if (isAdmin && userRole === 'admin') {
+    // Only redirect if already logged in and not already on dashboard to avoid infinite loop
+    if (isAdmin && userRole === 'admin' && window.location.pathname !== '/admin/dashboard') {
       router.push('/admin/dashboard');
     }
   }, [mounted, router]);

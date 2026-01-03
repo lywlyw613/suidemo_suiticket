@@ -11,13 +11,20 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     
     // Check admin access
     const isAdmin = localStorage.getItem('is_admin') === 'true';
-    if (!isAdmin) {
+    const userRole = localStorage.getItem('userRole');
+    
+    // Only redirect if not already on login page to avoid infinite loop
+    if (!isAdmin && window.location.pathname !== '/admin/login') {
       router.push('/admin/login');
     }
-  }, [router]);
+  }, [mounted, router]);
 
   if (!mounted) {
     return null;
