@@ -13,8 +13,15 @@ export default function Home() {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
     
-    if (token && userRole) {
-      // 已登入，根據用戶類型跳轉
+    // 只在首次訪問首頁時重定向，避免循環重定向
+    // 檢查當前路徑，如果已經在目標頁面就不重定向
+    const currentPath = window.location.pathname;
+    const isOnTargetPage = currentPath.startsWith('/organizer/') || 
+                          currentPath.startsWith('/verifier/') || 
+                          currentPath.startsWith('/customer/');
+    
+    if (token && userRole && !isOnTargetPage && currentPath === '/') {
+      // 已登入且不在目標頁面，根據用戶類型跳轉
       const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
         : userRole === 'verifier' ? '/verifier/dashboard' 
         : '/customer/dashboard';

@@ -40,10 +40,18 @@ export default function LoginPage() {
     const userRole = localStorage.getItem('userRole');
     if (token && userRole) {
       // 已登入，直接跳轉
-      const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
-        : userRole === 'verifier' ? '/verifier/dashboard' 
-        : '/customer/dashboard';
-      router.push(redirectPath);
+      // 如果已經在目標頁面，就不重定向
+      const currentPath = window.location.pathname;
+      const isOnTargetPage = currentPath.startsWith('/organizer/') || 
+                            currentPath.startsWith('/verifier/') || 
+                            currentPath.startsWith('/customer/');
+      
+      if (!isOnTargetPage) {
+        const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
+          : userRole === 'verifier' ? '/verifier/dashboard' 
+          : '/customer/dashboard';
+        router.push(redirectPath);
+      }
     }
   }, [mounted, router]);
 
