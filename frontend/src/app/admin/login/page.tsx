@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useCurrentAccount, useConnectWallet } from '@mysten/dapp-kit';
+import { useCurrentAccount, useWallets } from '@mysten/dapp-kit';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const currentAccount = useCurrentAccount();
-  const { mutate: connectWallet } = useConnectWallet();
+  const wallets = useWallets();
   const [mounted, setMounted] = useState(false);
   const [adminAddress, setAdminAddress] = useState<string>('');
 
@@ -33,31 +33,25 @@ export default function AdminLoginPage() {
     }
   }, [mounted, router]);
 
-  const handleWalletConnect = () => {
-    connectWallet(
-      {},
-      {
-        onSuccess: (result) => {
-          if (result) {
-            // For demo: check if address matches admin address or set as admin
-            const address = result.accounts[0]?.address;
-            if (address) {
-              // Demo: Allow any address to be admin, or check against whitelist
-              const isAdmin = !adminAddress || address === adminAddress || address.toLowerCase() === adminAddress.toLowerCase();
-              
-              if (isAdmin) {
-                localStorage.setItem('is_admin', 'true');
-                localStorage.setItem('userRole', 'admin');
-                localStorage.setItem('admin_wallet', address);
-                router.push('/admin/dashboard');
-              } else {
-                alert('This wallet is not authorized as admin');
-              }
-            }
-          }
-        },
+  const handleWalletConnect = async () => {
+    // For demo: directly set as admin after wallet connection
+    // In production, this would check wallet address against admin whitelist
+    if (currentAccount?.address) {
+      const address = currentAccount.address;
+      const isAdmin = !adminAddress || address === adminAddress || address.toLowerCase() === adminAddress.toLowerCase();
+      
+      if (isAdmin) {
+        localStorage.setItem('is_admin', 'true');
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('admin_wallet', address);
+        router.push('/admin/dashboard');
+      } else {
+        alert('This wallet is not authorized as admin');
       }
-    );
+    } else {
+      // If no wallet connected, show message to connect first
+      alert('Please connect your wallet first');
+    }
   };
 
   const handleSetAdminAddress = () => {
