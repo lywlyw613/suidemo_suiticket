@@ -158,9 +158,8 @@ export default function MyTicketsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTickets.map((ticket) => (
-              <Link
+              <div
                 key={ticket.objectId}
-                href={`/customer/tickets/${ticket.objectId}`}
                 className={`bg-white rounded-xl shadow-sm border-2 overflow-hidden hover:shadow-md transition-all group ${
                   ticket.isUsed ? 'opacity-75 border-gray-300' : 'border-gray-200'
                 }`}
@@ -202,8 +201,24 @@ export default function MyTicketsPage() {
                       {ticket.ticketType} • {ticket.ticketNumber}
                     </p>
                   </div>
+                  <div className="mt-4 flex gap-2">
+                    <Link
+                      href={`/customer/tickets/${ticket.objectId}`}
+                      className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium text-sm text-center transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      View Details
+                    </Link>
+                    <Link
+                      href={`/customer/tickets/${ticket.objectId}/event-day`}
+                      className="flex-1 px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-semibold text-sm text-center hover:from-primary-600 hover:to-primary-700 transition-all shadow-md"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Show QR Code
+                    </Link>
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}
