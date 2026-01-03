@@ -36,22 +36,18 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!mounted) return;
-    // 如果用戶選擇了新角色，清除舊的登入狀態，允許重新登入
+    // 如果用戶已經選擇了角色，不要自動重定向（讓用戶完成登入流程）
     if (selectedRole) {
-      // 清除舊的登入狀態，讓用戶可以用新角色登入
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('userRole');
-    } else {
-      // 只有在沒有選擇角色且已登入時才重定向
-      const token = localStorage.getItem('token');
-      const userRole = localStorage.getItem('userRole');
-      if (token && userRole && window.location.pathname === '/login') {
-        const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
-          : userRole === 'verifier' ? '/verifier/dashboard' 
-          : '/customer/dashboard';
-        router.push(redirectPath);
-      }
+      return;
+    }
+    // 只有在沒有選擇角色且已登入時才重定向
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+    if (token && userRole && window.location.pathname === '/login') {
+      const redirectPath = userRole === 'organizer' ? '/organizer/dashboard' 
+        : userRole === 'verifier' ? '/verifier/dashboard' 
+        : '/customer/dashboard';
+      router.push(redirectPath);
     }
   }, [mounted, router, selectedRole]);
 
